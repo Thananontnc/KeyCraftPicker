@@ -3,13 +3,17 @@ import { User, Keyboard, Settings, LogIn } from 'lucide-react';
 import './style.css'; // Assuming vanilla CSS is here or index.css
 import Login from './Login';
 import Register from './Register';
+import PartBrowser from './PartBrowser';
 
 // Pages (Placeholder for now)
 const Home = () => (
     <div className="page-container">
         <h1>Welcome to KeyCraft Picker</h1>
         <p>Build your dream mechanical keyboard with confidence.</p>
-        <Link to="/builder" className="btn-primary">Start Building</Link>
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+            <Link to="/builder" className="btn-primary">Start Building</Link>
+            <Link to="/parts" className="btn-primary" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>Browse Parts</Link>
+        </div>
     </div>
 );
 
@@ -27,6 +31,7 @@ function App() {
                     <div className="nav-links">
                         <Link to="/">Home</Link>
                         <Link to="/builder">Builder</Link>
+                        <Link to="/parts">Parts</Link>
                         <Link to="/builds">My Builds</Link>
                     </div>
                     <div className="auth-links">
@@ -40,6 +45,7 @@ function App() {
                         <Route path="/" element={<Home />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
+                        <Route path="/parts" element={<PartBrowser />} />
                         <Route path="/builder" element={<Builder />} />
                     </Routes>
                 </main>
@@ -47,5 +53,6 @@ function App() {
         </Router>
     );
 }
+
 
 export default App;
