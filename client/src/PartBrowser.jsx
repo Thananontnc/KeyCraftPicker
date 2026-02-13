@@ -77,9 +77,35 @@ const PartBrowser = () => {
                                     <span className="badge"><PartTypeIcon type={part.type} /> {part.type}</span>
                                 </div>
                                 <p className="price">${part.price.toFixed(2)}</p>
-                                {/* Specs preview could go here */}
-                                {part.specs && part.type === 'case' && <p className="specs">{part.specs.layout} Layout</p>}
-                                {part.specs && part.type === 'switch' && <p className="specs">{part.specs.type} Switch</p>}
+                                {/* Specs preview */}
+                                {part.specs && (
+                                    <div className="specs-container" style={{ marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }}>
+                                        {part.type === 'case' && (
+                                            <>
+                                                <span className="specs">{part.specs.layout}</span>
+                                                <span className="specs">{part.specs.mountingType}</span>
+                                            </>
+                                        )}
+                                        {part.type === 'pcb' && (
+                                            <>
+                                                <span className="specs">{part.specs.layout}</span>
+                                                <span className="specs">{part.specs.hotSwap ? 'Hot-swap' : 'Solder'}</span>
+                                                <span className="specs">{part.specs.switchSupport}</span>
+                                            </>
+                                        )}
+                                        {part.type === 'switch' && (
+                                            <>
+                                                <span className="specs">{part.specs.brand}</span>
+                                                <span className="specs">{part.specs.switchType}</span>
+                                            </>
+                                        )}
+                                        {part.type === 'keycap' && (
+                                            <>
+                                                <span className="specs">{part.specs.material}</span>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ))}
