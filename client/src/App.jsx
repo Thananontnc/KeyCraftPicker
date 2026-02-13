@@ -4,6 +4,7 @@ import './style.css'; // Assuming vanilla CSS is here or index.css
 import Login from './Login';
 import Register from './Register';
 import PartBrowser from './PartBrowser';
+import UserBuilds from './UserBuilds';
 
 // Pages (Placeholder for now)
 const Home = () => (
@@ -47,6 +48,7 @@ function App() {
                         <Route path="/register" element={<Register />} />
                         <Route path="/parts" element={<PartBrowser />} />
                         <Route path="/builder" element={<Builder />} />
+                        <Route path="/builds" element={<UserBuilds />} />
                     </Routes>
                 </main>
             </div>
