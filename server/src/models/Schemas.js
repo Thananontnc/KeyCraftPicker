@@ -46,8 +46,8 @@ const PartSchema = new mongoose.Schema({
     },
     // Dynamic fields based on type
     specs: {
-        type: Map,
-        of: mongoose.Schema.Types.Mixed,
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
     },
 }, { timestamps: true });
 

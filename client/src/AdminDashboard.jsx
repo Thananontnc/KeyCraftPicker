@@ -93,7 +93,6 @@ const AdminDashboard = () => {
                             <select
                                 value={formData.specs?.switchSupport || '5-pin'}
                                 onChange={(e) => handleSpecChange('switchSupport', e.target.value)}
-                                style={{ padding: '0.75rem', borderRadius: 'var(--radius)', backgroundColor: 'var(--bg-color)', color: 'white', border: '1px solid var(--border-color)' }}
                             >
                                 <option value="3-pin">3-pin</option>
                                 <option value="5-pin">5-pin</option>
@@ -117,7 +116,6 @@ const AdminDashboard = () => {
                             <select
                                 value={formData.specs?.switchType || 'Linear'}
                                 onChange={(e) => handleSpecChange('switchType', e.target.value)}
-                                style={{ padding: '0.75rem', borderRadius: 'var(--radius)', backgroundColor: 'var(--bg-color)', color: 'white', border: '1px solid var(--border-color)' }}
                             >
                                 <option value="Linear">Linear</option>
                                 <option value="Tactile">Tactile</option>
@@ -193,7 +191,7 @@ const AdminDashboard = () => {
                         </div>
                         <div className="form-group">
                             <label>Type</label>
-                            <select name="type" value={formData.type} onChange={handleChange} style={{ padding: '0.75rem', borderRadius: 'var(--radius)', backgroundColor: 'var(--bg-color)', color: 'white', border: '1px solid var(--border-color)' }}>
+                            <select name="type" value={formData.type} onChange={handleChange}>
                                 <option value="case">Case</option>
                                 <option value="pcb">PCB</option>
                                 <option value="switch">Switch</option>
@@ -226,9 +224,9 @@ const AdminDashboard = () => {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
                                 <strong>{part.name}</strong>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{part.type} - ${part.price}</div>
+                                <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>{part.type} - ${part.price}</div>
                             </div>
-                            <button onClick={() => handleDelete(part._id)} className="btn-sm" style={{ color: '#ef4444', borderColor: '#ef4444' }}>
+                            <button onClick={() => handleDelete(part._id)} className="btn-sm" style={{ color: 'var(--brick-red)', borderColor: 'var(--brick-red)' }}>
                                 <Trash2 size={16} />
                             </button>
                         </div>

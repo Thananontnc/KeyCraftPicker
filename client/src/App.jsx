@@ -6,21 +6,8 @@ import Register from './Register';
 import PartBrowser from './PartBrowser';
 import UserBuilds from './UserBuilds';
 import AdminDashboard from './AdminDashboard';
-
-// Pages (Placeholder for now)
-const Home = () => (
-    <div className="page-container">
-        <h1>Welcome to KeyCraft Picker</h1>
-        <p>Build your dream mechanical keyboard with confidence.</p>
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <Link to="/builder" className="btn-primary">Start Building</Link>
-            <Link to="/parts" className="btn-primary" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>Browse Parts</Link>
-        </div>
-    </div>
-);
-
-// Builder still placeholder for now
-const Builder = () => <div className="page-container"><h2>Keyboard Builder</h2></div>;
+import Builder from './Builder';
+import Home from './Home';
 
 function App() {
     return (
@@ -28,7 +15,7 @@ function App() {
             <div className="app-container">
                 <nav className="navbar">
                     <div className="logo">
-                        <Keyboard size={24} /> KeyCraft
+                        <Keyboard size={28} /> KeyCraft
                     </div>
                     <div className="nav-links">
                         <Link to="/">Home</Link>
@@ -57,6 +44,5 @@ function App() {
         </Router>
     );
 }
-
 
 export default App;

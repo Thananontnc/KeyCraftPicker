@@ -28,36 +28,57 @@ const Register = () => {
     };
 
     return (
-        <div className="page-container" style={{ maxWidth: '400px' }}>
-            <div className="card">
-                <h2><UserPlus size={24} style={{ marginBottom: '-6px' }} /> Join KeyCraft</h2>
-                {error && <div className="alert-error">{error}</div>}
-                <form onSubmit={handleSubmit} className="auth-form">
-                    <div className="form-group">
-                        <label>Username</label>
-                        <input
-                            type="text"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            required
-                        />
+        <div className="auth-container">
+            {/* Left Side - Branding */}
+            <div className="auth-left">
+                <div className="auth-left-content">
+                    <h1>KeyCraft</h1>
+                    <p>Every great build starts with a single brick.</p>
+                </div>
+            </div>
+
+            {/* Right Side - Form */}
+            <div className="auth-right">
+                <div className="auth-card">
+                    <h2 className="auth-title">Register</h2>
+                    <p className="auth-subtitle">Join the builder community today.</p>
+
+                    {error && <div className="alert-error" style={{ marginBottom: '1.5rem' }}>{error}</div>}
+
+                    <form onSubmit={handleSubmit} className="auth-form">
+                        <div>
+                            <label>Username</label>
+                            <input
+                                type="text"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                required
+                                placeholder="Choose a username"
+                            />
+                        </div>
+                        <div>
+                            <label>Password</label>
+                            <input
+                                type="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                placeholder="Create a password"
+                            />
+                        </div>
+                        <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '1rem', background: 'var(--brick-green)' }}>
+                            <UserPlus size={20} style={{ marginRight: '8px' }} /> Join KeyCraft
+                        </button>
+                    </form>
+
+                    <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+                        <p style={{ color: 'var(--text-muted)' }}>
+                            Already have an account? <Link to="/login" style={{ color: 'var(--brick-blue)', fontWeight: '800' }}>Login here</Link>
+                        </p>
                     </div>
-                    <div className="form-group">
-                        <label>Password</label>
-                        <input
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <button type="submit" className="btn-primary" style={{ width: '100%' }}>Create Account</button>
-                </form>
-                <p style={{ marginTop: '1rem', color: 'var(--text-secondary)' }}>
-                    Already have an account? <Link to="/login" style={{ color: 'var(--accent-color)' }}>Login</Link>
-                </p>
+                </div>
             </div>
         </div>
     );

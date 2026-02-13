@@ -31,36 +31,57 @@ const Login = () => {
     };
 
     return (
-        <div className="page-container" style={{ maxWidth: '400px' }}>
-            <div className="card">
-                <h2><LogIn size={24} style={{ marginBottom: '-6px' }} /> Login to KeyCraft</h2>
-                {error && <div className="alert-error">{error}</div>}
-                <form onSubmit={handleSubmit} className="auth-form">
-                    <div className="form-group">
-                        <label>Username</label>
-                        <input
-                            type="text"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            required
-                        />
+        <div className="auth-container">
+            {/* Left Side - Branding */}
+            <div className="auth-left">
+                <div className="auth-left-content">
+                    <h1>KeyCraft</h1>
+                    <p>Build your dream keyboard, brick by brick.</p>
+                </div>
+            </div>
+
+            {/* Right Side - Form */}
+            <div className="auth-right">
+                <div className="auth-card">
+                    <h2 className="auth-title">Login</h2>
+                    <p className="auth-subtitle">Welcome back, get building!</p>
+
+                    {error && <div className="alert-error" style={{ marginBottom: '1.5rem' }}>{error}</div>}
+
+                    <form onSubmit={handleSubmit} className="auth-form">
+                        <div>
+                            <label>Username</label>
+                            <input
+                                type="text"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                required
+                                placeholder="Enter your username"
+                            />
+                        </div>
+                        <div>
+                            <label>Password</label>
+                            <input
+                                type="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                placeholder="Enter your password"
+                            />
+                        </div>
+                        <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '1rem' }}>
+                            <LogIn size={20} style={{ marginRight: '8px' }} /> Login
+                        </button>
+                    </form>
+
+                    <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+                        <p style={{ color: 'var(--text-muted)' }}>
+                            New here? <Link to="/register" style={{ color: 'var(--brick-blue)', fontWeight: '800' }}>Create an account</Link>
+                        </p>
                     </div>
-                    <div className="form-group">
-                        <label>Password</label>
-                        <input
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <button type="submit" className="btn-primary" style={{ width: '100%' }}>Login</button>
-                </form>
-                <p style={{ marginTop: '1rem', color: 'var(--text-secondary)' }}>
-                    Don't have an account? <Link to="/register" style={{ color: 'var(--accent-color)' }}>Register</Link>
-                </p>
+                </div>
             </div>
         </div>
     );

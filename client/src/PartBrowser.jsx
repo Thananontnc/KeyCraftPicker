@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Package, CircuitBoard, Keyboard, Cpu } from 'lucide-react';
+import { Package, CircuitBoard, Keyboard, Cpu, Filter } from 'lucide-react';
 
 const PartTypeIcon = ({ type }) => {
     switch (type) {
-        case 'case': return <Package size={20} />;
-        case 'pcb': return <CircuitBoard size={20} />;
-        case 'switch': return <Cpu size={20} />;
-        case 'keycap': return <Keyboard size={20} />;
-        default: return <Package size={20} />;
+        case 'case': return <Package size={18} />;
+        case 'pcb': return <CircuitBoard size={18} />;
+        case 'switch': return <Cpu size={18} />;
+        case 'keycap': return <Keyboard size={18} />;
+        default: return <Package size={18} />;
     }
 };
 
@@ -24,7 +24,6 @@ const PartBrowser = () => {
     const fetchParts = async () => {
         setLoading(true);
         try {
-            // Build query string
             const url = activeTab === 'all'
                 ? 'http://localhost:3000/api/parts'
                 : `http://localhost:3000/api/parts?type=${activeTab}`;
@@ -50,7 +49,12 @@ const PartBrowser = () => {
 
     return (
         <div className="page-container" style={{ textAlign: 'left', marginTop: '2rem' }}>
-            <h1>Part Catalog</h1>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+                <div>
+                    <h1 style={{ fontSize: '3rem', color: 'var(--brick-red)' }}>Part Catalog</h1>
+                    <p style={{ color: 'var(--text-main)', fontSize: '1.2rem', fontWeight: '600' }}>Browse high-quality components for your next build.</p>
+                </div>
+            </div>
 
             <div className="tabs">
                 {tabs.map(tab => (
@@ -65,21 +69,29 @@ const PartBrowser = () => {
             </div>
 
             {loading ? (
-                <p>Loading components...</p>
+                <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
+                    Loading components...
+                </div>
             ) : (
                 <div className="grid">
                     {parts.map(part => (
                         <div key={part._id} className="card part-card">
-                            <div className="part-image" style={{ backgroundImage: `url(${part.image})` }}></div>
+                            <div className="part-image" style={{ backgroundImage: `url(${part.image})` }}>
+                                <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
+                                    <span className="badge">
+                                        <PartTypeIcon type={part.type} /> {part.type}
+                                    </span>
+                                </div>
+                            </div>
                             <div className="part-info">
                                 <div className="part-header">
                                     <h3>{part.name}</h3>
-                                    <span className="badge"><PartTypeIcon type={part.type} /> {part.type}</span>
                                 </div>
                                 <p className="price">${part.price.toFixed(2)}</p>
+
                                 {/* Specs preview */}
                                 {part.specs && (
-                                    <div className="specs-container" style={{ marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }}>
+                                    <div className="specs-container">
                                         {part.type === 'case' && (
                                             <>
                                                 <span className="specs">{part.specs.layout}</span>
@@ -90,7 +102,6 @@ const PartBrowser = () => {
                                             <>
                                                 <span className="specs">{part.specs.layout}</span>
                                                 <span className="specs">{part.specs.hotSwap ? 'Hot-swap' : 'Solder'}</span>
-                                                <span className="specs">{part.specs.switchSupport}</span>
                                             </>
                                         )}
                                         {part.type === 'switch' && (

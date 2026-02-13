@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Save, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Save, AlertTriangle, CheckCircle, X } from 'lucide-react';
 
 const Builder = () => {
     // State for selected parts
@@ -101,10 +101,13 @@ const Builder = () => {
 
     return (
         <div className="page-container" style={{ textAlign: 'left', marginTop: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h1>Keyboard Builder</h1>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <div>
+                    <h1 style={{ fontSize: '2.5rem', fontWeight: '700' }}>Keyboard Builder</h1>
+                    <p style={{ color: 'var(--text-muted)' }}>Select components to visualize your custom keyboard.</p>
+                </div>
                 <div style={{ textAlign: 'right' }}>
-                    <h2 className="price">Total: ${calculateTotal()}</h2>
+                    <h2 className="price" style={{ marginBottom: '0.5rem' }}>Total: ${calculateTotal()}</h2>
                     <button onClick={handleSave} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <Save size={18} /> Save Build
                     </button>
@@ -113,7 +116,7 @@ const Builder = () => {
 
             {/* Compatibility Status */}
             {!compatibility.compatible && (
-                <div className="alert-error" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                <div className="alert-error" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', marginBottom: '2rem' }}>
                     <AlertTriangle size={24} />
                     <div>
                         <strong>Compatibility Issues Found:</strong>
@@ -127,65 +130,74 @@ const Builder = () => {
             )}
             {compatibility.compatible && Object.values(build).some(p => p) && (
                 <div className="alert-success" style={{
-                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                    color: '#4ade80',
-                    padding: '1rem',
-                    borderRadius: 'var(--radius)',
-                    marginBottom: '1rem',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.5rem'
+                    gap: '0.75rem',
+                    marginBottom: '2rem'
                 }}>
-                    <CheckCircle size={20} /> All parts compatible so far.
+                    <CheckCircle size={24} /> <span style={{ fontWeight: '700', fontSize: '1.1rem' }}>All parts compatible so far!</span>
                 </div>
             )}
 
             {/* Build Slots */}
             <div className="grid">
                 {['case', 'pcb', 'switch', 'keycap'].map(type => (
-                    <div key={type} className="card part-card" style={{ borderStyle: build[type] ? 'solid' : 'dashed' }}>
+                    <div key={type} className="card part-card" style={{
+                        borderStyle: build[type] ? 'solid' : 'dashed',
+                        borderColor: build[type] ? 'var(--border-color)' : 'var(--brick-grey)',
+                        background: build[type] ? 'white' : '#f4f4f5',
+                        borderWidth: '3px'
+                    }}>
                         {build[type] ? (
                             <>
-                                <div className="part-image" style={{ backgroundImage: `url(${build[type].image})`, height: '140px' }}></div>
+                                <div className="part-image" style={{ backgroundImage: `url(${build[type].image})`, height: '160px' }}></div>
                                 <div className="part-info">
-                                    <h3>{build[type].name}</h3>
-                                    <p className="price" style={{ fontSize: '1rem' }}>${build[type].price}</p>
-                                    <button onClick={() => fetchPartsForSlot(type)} className="btn-sm" style={{ width: '100%', justifyContent: 'center' }}>Change</button>
+                                    <h3 style={{ textTransform: 'capitalize' }}>{type}</h3>
+                                    <div style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '0.5rem' }}>{build[type].name}</div>
+                                    <p className="price" style={{ fontSize: '1.25rem' }}>${build[type].price}</p>
+                                    <button onClick={() => fetchPartsForSlot(type)} className="btn-sm" style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>Change</button>
                                 </div>
                             </>
                         ) : (
-                            <div style={{ padding: '3rem 1rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                                <h3>Select {type.toUpperCase()}</h3>
-                                <button onClick={() => fetchPartsForSlot(type)} className="btn-primary" style={{ marginTop: '1rem' }}>+ Add</button>
+                            <div style={{ padding: '4rem 1rem', textAlign: 'center', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                                <h3 style={{ textTransform: 'uppercase', letterSpacing: '1px', fontSize: '1rem', marginBottom: '1rem', color: 'var(--brick-grey)' }}>Select {type}</h3>
+                                <button onClick={() => fetchPartsForSlot(type)} className="btn-primary" style={{ padding: '0.5rem 1.5rem' }}>+ Add Block</button>
                             </div>
                         )}
                     </div>
                 ))}
             </div>
 
-            {/* Selection Modal (Simplified as inline list for now) */}
+            {/* Selection Modal */}
             {activeSlot && (
-                <div className="modal-overlay" style={{
-                    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                    backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 50,
-                    display: 'flex', justifyContent: 'center', alignItems: 'center'
+                <div style={{
+                    position: 'fixed', inset: 0,
+                    backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(5px)',
+                    zIndex: 200,
+                    display: 'flex', justifyContent: 'center', alignItems: 'center',
+                    padding: '2rem'
                 }}>
-                    <div className="card" style={{ width: '90%', maxWidth: '800px', maxHeight: '80vh', overflowY: 'auto' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                            <h2>Select {activeSlot}</h2>
-                            <button onClick={() => setActiveSlot(null)} className="btn-sm">Close</button>
+                    <div className="card" style={{
+                        width: '100%', maxWidth: '900px', maxHeight: '85vh',
+                        display: 'flex', flexDirection: 'column', padding: '0', overflow: 'hidden'
+                    }}>
+                        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.2)' }}>
+                            <h2 style={{ textTransform: 'capitalize' }}>Select {activeSlot}</h2>
+                            <button onClick={() => setActiveSlot(null)} className="btn-sm" style={{ border: 'none', background: 'transparent' }}><X size={24} /></button>
                         </div>
 
-                        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}>
-                            {parts.map(part => (
-                                <div key={part._id} className="part-card" onClick={() => selectPart(part)} style={{ cursor: 'pointer' }}>
-                                    <div className="part-image" style={{ backgroundImage: `url(${part.image})`, height: '120px' }}></div>
-                                    <div className="part-info">
-                                        <h4 style={{ fontSize: '1rem' }}>{part.name}</h4>
-                                        <p className="price" style={{ fontSize: '1rem' }}>${part.price}</p>
+                        <div style={{ overflowY: 'auto', padding: '1.5rem' }}>
+                            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
+                                {parts.map(part => (
+                                    <div key={part._id} className="card part-card" onClick={() => selectPart(part)} style={{ cursor: 'pointer', border: '1px solid var(--border-hover)' }}>
+                                        <div className="part-image" style={{ backgroundImage: `url(${part.image})`, height: '140px' }}></div>
+                                        <div className="part-info" style={{ padding: '1rem' }}>
+                                            <h4 style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>{part.name}</h4>
+                                            <p className="price" style={{ fontSize: '1.1rem' }}>${part.price}</p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
