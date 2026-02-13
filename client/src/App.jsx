@@ -5,6 +5,7 @@ import Login from './Login';
 import Register from './Register';
 import PartBrowser from './PartBrowser';
 import UserBuilds from './UserBuilds';
+import AdminDashboard from './AdminDashboard';
 
 // Pages (Placeholder for now)
 const Home = () => (
@@ -49,6 +50,7 @@ function App() {
                         <Route path="/parts" element={<PartBrowser />} />
                         <Route path="/builder" element={<Builder />} />
                         <Route path="/builds" element={<UserBuilds />} />
+                        <Route path="/admin" element={<AdminDashboard />} />
                     </Routes>
                 </main>
             </div>
