@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { User, Keyboard, Settings, LogIn } from 'lucide-react';
-import './style.css'; // Assuming vanilla CSS is here or index.css
+import './index.css';
 import Login from './Login';
 import Register from './Register';
 import PartBrowser from './PartBrowser';
