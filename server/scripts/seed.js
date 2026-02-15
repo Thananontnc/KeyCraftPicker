@@ -39,9 +39,11 @@ const Part = mongoose.models.Part || mongoose.model('Part', partSchema);
 // 3. Define 50+ Parts
 const parts = [
     // --- CASES (Real Tofu60 Images - Divinikey) ---
-    { name: 'Tofu60 Redux Case - Black', type: 'case', price: 89.00, image: 'https://divinikey.com/cdn/shop/products/kbdfans-tofu60-redux-case-368883.webp?v=1695485072&width=1214', specs: { layout: '60%', mountingType: 'Tray', supportedLayouts: ['60%'] } },
-    { name: 'Tofu60 Redux Case - E-White', type: 'case', price: 99.00, image: 'https://divinikey.com/cdn/shop/products/kbdfans-tofu60-redux-case-368883.webp?v=1695485072&width=1214', specs: { layout: '60%', mountingType: 'Tray', supportedLayouts: ['60%'] } },
-    { name: 'Tofu60 Redux Case - Burgundy', type: 'case', price: 89.00, image: 'https://divinikey.com/cdn/shop/products/kbdfans-tofu60-redux-case-368883.webp?v=1695485072&width=1214', specs: { layout: '60%', mountingType: 'Tray', supportedLayouts: ['60%'] } },
+    //60% Case
+    { name: 'Tofu60 Redux Case - Black', type: 'case', price: 89.00, image: 'https://down-th.img.susercontent.com/file/cn-11134207-7r98o-lkninb731ohp10', specs: { layout: '60%', mountingType: 'Tray', supportedLayouts: ['60%'] } },
+    { name: 'Bakeneko60 CNC - Lavender', type: 'case', price: 130.00, image: 'https://cannonkeys.com/cdn/shop/products/60-lav.jpg?v=1697755322&width=3000', specs: { layout: '60%', mountingType: 'Gummy O-ring', supportedLayouts: ['60%'] } },
+    { name: 'Freebird60 Case - White', type: 'case', price: 95.00, image: 'https://keebsforall.com/cdn/shop/files/fb60white.jpg?v=1731535128&width=3000', specs: { layout: '60%', mountingType: 'Gasket', supportedLayouts: ['60%'] } },
+
     { name: 'Tofu65 2.0 Case - Grey', type: 'case', price: 109.00, image: 'https://divinikey.com/cdn/shop/products/kbdfans-tofu60-redux-case-368883.webp?v=1695485072&width=1214', specs: { layout: '65%', mountingType: 'Gasket', supportedLayouts: ['65%'] } },
     { name: 'KBD67 Lite R4 Case - Transparent', type: 'case', price: 109.00, image: 'https://images.unsplash.com/photo-1647228224590-7d34b3f1737e?w=600&q=80', specs: { layout: '65%', mountingType: 'Gasket', supportedLayouts: ['65%'] } },
     { name: 'KBD67 Lite R4 Case - White', type: 'case', price: 109.00, image: 'https://images.unsplash.com/photo-1613589947849-c1920d3caa95?w=600&q=80', specs: { layout: '65%', mountingType: 'Gasket', supportedLayouts: ['65%'] } },
@@ -56,9 +58,11 @@ const parts = [
     { name: 'Wooting 60HE Case', type: 'case', price: 69.00, image: 'https://divinikey.com/cdn/shop/products/kbdfans-tofu60-redux-case-368883.webp?v=1695485072&width=1214', specs: { layout: '60%', mountingType: 'Tray', supportedLayouts: ['60%'] } },
 
     // --- PCBs (Circuit Boards / Internals) ---
-    { name: 'DZ60RGB V2 Hot-swap PCB', type: 'pcb', price: 55.00, image: 'https://images.unsplash.com/photo-1618335829731-55950284ddce?w=600&q=80', specs: { layout: '60%', mountingType: 'Tray', switchSupport: '5-pin', hotSwap: true } },
-    { name: 'DZ60 Solder PCB', type: 'pcb', price: 38.00, image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80', specs: { layout: '60%', mountingType: 'Tray', switchSupport: '5-pin', hotSwap: false } },
-    { name: 'KBD67 Mark II RGB PCB', type: 'pcb', price: 58.00, image: 'https://images.unsplash.com/photo-1555617912-436c04516ba6?w=600&q=80', specs: { layout: '65%', mountingType: 'Top', switchSupport: '5-pin', hotSwap: true } },
+    // 60% PCBs
+    { name: 'DZ60 RGB V2 Hot-swap', type: 'pcb', price: 58.00, image: 'https://kbdfans.com/cdn/shop/products/DZ60RGBANSI-2000.jpg?v=1627521245', specs: { layout: '60%', mountingType: 'Tray', switchSupport: '5-pin', hotSwap: true } },
+    { name: 'Instant60 PCB', type: 'pcb', price: 62.00, image: 'https://cannonkeys.com/cdn/shop/products/instant60-tsangan-top.jpg?v=1709145358&width=1500', specs: { layout: '60%', mountingType: 'Tray', switchSupport: '5-pin', hotSwap: true } },
+    { name: 'BM60 RGB ISO', type: 'pcb', price: 45.00, image: 'https://kprepublic.com/cdn/shop/products/Ha897ea2223f94af8829a92ebd1a771feh.jpg?v=1597062705', specs: { layout: '60%', mountingType: 'Tray', switchSupport: '3-pin', hotSwap: true } },
+
     { name: 'Mode Sonnet PCB - Hotswap', type: 'pcb', price: 65.00, image: 'https://images.unsplash.com/photo-1618335829731-55950284ddce?w=600&q=80', specs: { layout: '75%', mountingType: 'Isolated Top', switchSupport: '5-pin', hotSwap: true } },
     { name: 'Mode Envoy PCB - Solder', type: 'pcb', price: 45.00, image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80', specs: { layout: '65%', mountingType: 'Lattice Block', switchSupport: '5-pin', hotSwap: false } },
     { name: 'Zoom75 Tri-mode PCB', type: 'pcb', price: 75.00, image: 'https://images.unsplash.com/photo-1555617912-436c04516ba6?w=600&q=80', specs: { layout: '75%', mountingType: 'Gasket', switchSupport: '5-pin', hotSwap: true } },
