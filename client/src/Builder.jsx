@@ -12,7 +12,7 @@ const Builder = () => {
     });
 
     const [parts, setParts] = useState([]);
-    const [compatibility, setCompatibility] = useState({ compatible: true, issues: [] });
+    const [compatibility, setCompatibility] = useState({ compatible: true, issues: [], warnings: [] });
     const [activeSlot, setActiveSlot] = useState(null); // 'case', 'pcb', etc.
 
     useEffect(() => {
@@ -31,7 +31,7 @@ const Builder = () => {
         // Only check if at least 2 parts are selected
         const selectedCount = Object.values(payload).filter(Boolean).length;
         if (selectedCount < 2) {
-            setCompatibility({ compatible: true, issues: [] });
+            setCompatibility({ compatible: true, issues: [], warnings: [] });
             return;
         }
 
@@ -40,7 +40,8 @@ const Builder = () => {
             if (res.data.success) {
                 setCompatibility({
                     compatible: res.data.compatible,
-                    issues: res.data.issues
+                    issues: res.data.issues,
+                    warnings: res.data.warnings || []
                 });
             }
         } catch (err) {
@@ -178,6 +179,25 @@ const Builder = () => {
                         <ul style={{ paddingLeft: '1.5rem', marginTop: '0.5rem', color: '#b91c1c' }}>
                             {compatibility.issues.map((issue, i) => (
                                 <li key={i}>{issue}</li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            )}
+
+            {/* Warnings (Non-blocking) */}
+            {compatibility.warnings?.length > 0 && (
+                <div className="alert-warning" style={{
+                    display: 'flex', gap: '1rem', alignItems: 'flex-start', marginBottom: '2rem',
+                    border: '3px solid var(--brick-yellow)', background: '#FFFBEB',
+                    boxShadow: '4px 4px 0px rgba(0,0,0,0.05)'
+                }}>
+                    <AlertTriangle size={24} color="#D97706" /> {/* Darker Yellow/Orange for visibility */}
+                    <div>
+                        <strong style={{ color: '#D97706', fontSize: '1.1rem' }}>Compatibility Warnings:</strong>
+                        <ul style={{ paddingLeft: '1.5rem', marginTop: '0.5rem', color: '#92400E' }}>
+                            {compatibility.warnings.map((warning, i) => (
+                                <li key={i}>{warning}</li>
                             ))}
                         </ul>
                     </div>
