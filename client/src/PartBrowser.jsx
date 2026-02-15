@@ -17,18 +17,28 @@ const PartBrowser = () => {
     const [activeTab, setActiveTab] = useState('all');
     const [loading, setLoading] = useState(true);
 
+    const [searchQuery, setSearchQuery] = useState('');
+
     useEffect(() => {
-        fetchParts();
-    }, [activeTab]);
+        // Debounce search effect could be added here, 
+        // but for simplicity, we'll fetch when activeTab changes or search is submitted (or maybe just typing?)
+        // Let's attach fetchParts to searchQuery as well for live search
+        const delayDebounceFn = setTimeout(() => {
+            fetchParts();
+        }, 300); // 300ms debounce
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [activeTab, searchQuery]);
 
     const fetchParts = async () => {
         setLoading(true);
         try {
-            const url = activeTab === 'all'
-                ? 'http://localhost:3000/api/parts'
-                : `http://localhost:3000/api/parts?type=${activeTab}`;
+            // Build query params
+            const params = new URLSearchParams();
+            if (activeTab !== 'all') params.append('type', activeTab);
+            if (searchQuery) params.append('search', searchQuery);
 
-            const res = await axios.get(url);
+            const res = await axios.get(`http://localhost:3000/api/parts?${params.toString()}`);
             if (res.data.success) {
                 setParts(res.data.data);
             }
@@ -49,10 +59,32 @@ const PartBrowser = () => {
 
     return (
         <div className="page-container" style={{ textAlign: 'left', marginTop: '2rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
                     <h1 style={{ fontSize: '3rem', color: 'var(--brick-red)' }}>Part Catalog</h1>
                     <p style={{ color: 'var(--text-main)', fontSize: '1.2rem', fontWeight: '600' }}>Browse high-quality components for your next build.</p>
+                </div>
+
+                {/* Search Bar */}
+                <div style={{ position: 'relative', width: '300px' }}>
+                    <Filter className="search-icon" size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                    <input
+                        type="text"
+                        placeholder="Search parts..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{
+                            width: '100%',
+                            padding: '10px 10px 10px 40px',
+                            borderRadius: '12px',
+                            border: '2px solid var(--border-color)',
+                            fontSize: '1rem',
+                            outline: 'none',
+                            transition: 'border-color 0.2s'
+                        }}
+                        onFocus={(e) => e.target.style.borderColor = 'var(--brick-blue)'}
+                        onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
+                    />
                 </div>
             </div>
 
