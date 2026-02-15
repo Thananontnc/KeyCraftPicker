@@ -612,19 +612,14 @@ select:focus {
 
 /* Hero Section - Minimalist Lego Style */
 .hero-section {
-  background-color: #FAFAFA;
+  /* Removed specific background to use global body background per user request */
+  background: transparent;
   padding: 8rem 1.5rem 6rem;
   text-align: center;
-  border-bottom: var(--border-width) solid var(--border-color);
+  /* Removed border-bottom per user request */
+  border-bottom: none;
   position: relative;
   overflow: hidden;
-  /* Subtle Baseplate Pattern */
-  background-image:
-    radial-gradient(var(--brick-grey) 15%, transparent 16%),
-    radial-gradient(var(--brick-grey) 15%, transparent 16%);
-  background-size: 40px 40px;
-  background-position: 0 0, 20px 20px;
-  opacity: 1;
   margin-top: -2rem;
   margin-left: -2rem;
   margin-right: -2rem;
@@ -636,19 +631,17 @@ select:focus {
   margin: 0 auto;
   position: relative;
   z-index: 2;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 4rem;
-  border: 4px solid var(--text-main);
-  border-radius: 24px;
-  box-shadow: 12px 12px 0 var(--text-main);
-  backdrop-filter: blur(5px);
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  padding: 2rem;
+  /* Removed white box styling to blend with background per user request */
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .hero-content:hover {
-  transform: translateY(-5px);
-  box-shadow: 16px 16px 0 var(--brick-blue);
-  border-color: var(--brick-blue);
+  transform: translateY(-2px);
+  /* Removed hover borders/shadows */
 }
 
 .hero-title {
@@ -657,18 +650,30 @@ select:focus {
   color: var(--brick-red);
   margin-bottom: 1rem;
   line-height: 1.1;
-  text-shadow: 2px 2px 0px #111;
+  text-shadow:
+    3px 3px 0px #fff,
+    5px 5px 0px rgba(0, 0, 0, 0.1);
   text-transform: uppercase;
+  z-index: 5;
+  position: relative;
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
-  color: var(--text-muted);
+  font-size: 1.4rem;
+  color: #111;
+  /* Darker black for readability */
   margin-bottom: 2.5rem;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
-  font-weight: 700;
+  font-weight: 800;
+  /* Bolder */
+  text-shadow:
+    2px 2px 0px #fff,
+    0px 0px 10px #fff;
+  /* White glow to separate from dots */
+  position: relative;
+  z-index: 5;
 }
 
 .hero-buttons {
@@ -711,9 +716,10 @@ select:focus {
 /* Steps Section (How It Works) */
 .steps-section {
   padding: 4rem 1.5rem;
-  background: #fff;
-  border-top: var(--border-width) solid var(--border-color);
-  border-bottom: var(--border-width) solid var(--border-color);
+  /* Removed white background to match "Why Use KeyCraft?" per user request */
+  background: transparent;
+  border-top: none;
+  border-bottom: none;
   margin-left: -2rem;
   margin-right: -2rem;
   width: calc(100% + 4rem);
