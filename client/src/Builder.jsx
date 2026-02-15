@@ -14,11 +14,27 @@ const Builder = () => {
     const [parts, setParts] = useState([]);
     const [compatibility, setCompatibility] = useState({ compatible: true, issues: [], warnings: [] });
     const [activeSlot, setActiveSlot] = useState(null); // 'case', 'pcb', etc.
+    const [presets, setPresets] = useState([]);
 
     useEffect(() => {
         // Check compatibility whenever build changes
         checkCompatibility();
     }, [build]);
+
+    useEffect(() => {
+        fetchPresets();
+    }, []);
+
+    const fetchPresets = async () => {
+        try {
+            const res = await axios.get('http://localhost:3000/api/recommendations/presets');
+            if (res.data.success) {
+                setPresets(res.data.presets);
+            }
+        } catch (err) {
+            console.error('Failed to fetch presets', err);
+        }
+    };
 
     const checkCompatibility = async () => {
         const payload = {
@@ -134,6 +150,61 @@ const Builder = () => {
         return true;
     };
 
+    const renderSpecs = (part) => {
+        if (!part || !part.specs) return null;
+
+        const badges = [];
+        const badgeStyle = {
+            fontSize: '0.75rem',
+            padding: '2px 8px',
+            borderRadius: '12px',
+            background: 'var(--bg-color)',
+            border: '2px solid var(--brick-grey)',
+            color: 'var(--text-muted)',
+            fontWeight: '700',
+            textTransform: 'capitalize',
+            whiteSpace: 'nowrap'
+        };
+
+        // Helper to push badge
+        const addBadge = (label, colorVar = '--brick-grey') => {
+            badges.push(
+                <span key={label} style={{ ...badgeStyle, borderColor: `var(${colorVar})`, color: 'var(--text-main)' }}>
+                    {label}
+                </span>
+            );
+        };
+
+        switch (part.type) {
+            case 'case':
+                if (part.specs.layout) addBadge(part.specs.layout, '--brick-blue');
+                if (part.specs.mountingType) addBadge(part.specs.mountingType);
+                break;
+            case 'pcb':
+                if (part.specs.layout) addBadge(part.specs.layout, '--brick-blue');
+                if (part.specs.hotSwap) addBadge('Hotswap', '--brick-green');
+                if (part.specs.socketType) addBadge(part.specs.socketType);
+                if (part.specs.switchSupport) addBadge(`Supports ${part.specs.switchSupport}`);
+                break;
+            case 'switch':
+                if (part.specs.switchType) addBadge(part.specs.switchType, '--brick-blue');
+                if (part.specs.pinType) addBadge(part.specs.pinType);
+                if (part.specs.technology) addBadge(part.specs.technology);
+                break;
+            case 'keycap':
+                if (part.specs.material) addBadge(part.specs.material, '--brick-blue');
+                break;
+            default:
+                break;
+        }
+
+        return (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.8rem' }}>
+                {badges}
+            </div>
+        );
+    };
+
     const filteredParts = showCompatibleOnly
         ? parts.filter(isPartCompatible)
         : parts;
@@ -242,9 +313,13 @@ const Builder = () => {
                                 <div className="part-info" style={{ padding: '1.5rem' }}>
                                     <h3 style={{ textTransform: 'uppercase', fontSize: '0.9rem', color: 'var(--text-muted)', letterSpacing: '1px' }}>{type}</h3>
                                     <div style={{ fontSize: '1.3rem', fontWeight: '800', marginBottom: '0.5rem', lineHeight: '1.2' }}>{build[type].name}</div>
-                                    <p className="price" style={{ fontSize: '1.5rem', color: 'var(--brick-blue)' }}>${build[type].price}</p>
+                                    <p className="price" style={{ fontSize: '1.5rem', color: 'var(--brick-blue)', marginBottom: '0.5rem' }}>${build[type].price}</p>
+
+                                    {/* Specs Badges */}
+                                    {renderSpecs(build[type])}
+
                                     <button onClick={() => fetchPartsForSlot(type)} style={{
-                                        width: '100%', justifyContent: 'center', marginTop: '1rem',
+                                        width: '100%', justifyContent: 'center', marginTop: '0.5rem',
                                         background: 'var(--brick-black)', color: 'white',
                                         border: 'none', borderRadius: '8px', padding: '0.8rem',
                                         fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer',
@@ -369,7 +444,11 @@ const Builder = () => {
                                             </div>
                                             <div className="part-info" style={{ padding: '1.2rem' }}>
                                                 <h4 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', fontWeight: '800', lineHeight: '1.3' }}>{part.name}</h4>
-                                                <p className="price" style={{ fontSize: '1.3rem', color: 'var(--brick-blue)' }}>${part.price}</p>
+                                                <p className="price" style={{ fontSize: '1.3rem', color: 'var(--brick-blue)', marginBottom: '0.5rem' }}>${part.price}</p>
+
+                                                {/* Specs Badges */}
+                                                {renderSpecs(part)}
+
                                                 {!isPartCompatible(part) && (
                                                     <div style={{
                                                         fontSize: '0.85rem', color: 'var(--brick-red)',
@@ -388,6 +467,60 @@ const Builder = () => {
                     </div>
                 </div>
             )}
+
+            {/* Recommended Presets Section */}
+            <div style={{ marginTop: '5rem', borderTop: '4px dashed var(--brick-grey)', paddingTop: '3rem' }}>
+                <h2 style={{
+                    fontSize: '2.5rem', fontWeight: '900', color: 'var(--brick-black)',
+                    textTransform: 'uppercase', marginBottom: '1.5rem',
+                    textAlign: 'center'
+                }}>Try a Pre-Configured Build 🏗️</h2>
+                <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                    {presets.map(preset => (
+                        <div key={preset.id} className="card" style={{
+                            display: 'flex', flexDirection: 'column',
+                            border: '3px solid var(--brick-black)',
+                            boxShadow: '8px 8px 0px rgba(0,0,0,0.1)',
+                            transition: 'transform 0.2s',
+                            cursor: 'pointer',
+                            overflow: 'hidden'
+                        }}
+                            onClick={() => {
+                                setBuild(preset.parts);
+                                // Scroll to top smoothly
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translate(-4px, -4px)'; e.currentTarget.style.boxShadow = '12px 12px 0px rgba(0,0,0,0.15)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '8px 8px 0px rgba(0,0,0,0.1)'; }}
+                        >
+                            <div style={{ height: '200px', overflow: 'hidden', borderBottom: '3px solid var(--brick-black)', background: '#f8f8f8' }}>
+                                <img
+                                    src={preset.image}
+                                    alt={preset.title}
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/300x200?text=Preset+Build'; }}
+                                />
+                            </div>
+                            <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                <h3 style={{ fontSize: '1.5rem', fontWeight: '900', marginBottom: '0.5rem' }}>{preset.title}</h3>
+                                <p style={{ color: '#666', marginBottom: '1rem', flex: 1 }}>{preset.description}</p>
+                                <div style={{
+                                    marginTop: 'auto',
+                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                    background: 'var(--bg-color)', padding: '0.8rem', borderRadius: '8px',
+                                    border: '2px solid var(--brick-grey)'
+                                }}>
+                                    <span style={{ fontWeight: '800', fontSize: '1.2rem' }}>${preset.totalPrice}</span>
+                                    <span style={{
+                                        fontSize: '0.9rem', fontWeight: '700',
+                                        color: 'var(--brick-blue)', textTransform: 'uppercase'
+                                    }}>Apply Build →</span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 };
