@@ -20,6 +20,7 @@ const Register = () => {
             if (res.data.success) {
                 // Auto login after register
                 localStorage.setItem('user', JSON.stringify(res.data.data));
+                window.dispatchEvent(new Event('auth-change'));
                 navigate('/builder');
             }
         } catch (err) {

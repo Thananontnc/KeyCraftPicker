@@ -150,7 +150,14 @@ const Builder = () => {
                     }}>
                         {build[type] ? (
                             <>
-                                <div className="part-image" style={{ backgroundImage: `url(${build[type].image})`, height: '160px' }}></div>
+                                <div className="part-image-container" style={{ height: '160px' }}>
+                                    <img
+                                        src={build[type].image}
+                                        alt={build[type].name}
+                                        className="part-image"
+                                        onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'; }}
+                                    />
+                                </div>
                                 <div className="part-info">
                                     <h3 style={{ textTransform: 'capitalize' }}>{type}</h3>
                                     <div style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '0.5rem' }}>{build[type].name}</div>
@@ -190,7 +197,14 @@ const Builder = () => {
                             <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
                                 {parts.map(part => (
                                     <div key={part._id} className="card part-card" onClick={() => selectPart(part)} style={{ cursor: 'pointer', border: '1px solid var(--border-hover)' }}>
-                                        <div className="part-image" style={{ backgroundImage: `url(${part.image})`, height: '140px' }}></div>
+                                        <div className="part-image-container" style={{ height: '140px' }}>
+                                            <img
+                                                src={part.image}
+                                                alt={part.name}
+                                                className="part-image"
+                                                onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'; }}
+                                            />
+                                        </div>
                                         <div className="part-info" style={{ padding: '1rem' }}>
                                             <h4 style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>{part.name}</h4>
                                             <p className="price" style={{ fontSize: '1.1rem' }}>${part.price}</p>

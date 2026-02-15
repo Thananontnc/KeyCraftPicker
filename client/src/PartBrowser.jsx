@@ -76,7 +76,13 @@ const PartBrowser = () => {
                 <div className="grid">
                     {parts.map(part => (
                         <div key={part._id} className="card part-card">
-                            <div className="part-image" style={{ backgroundImage: `url(${part.image})` }}>
+                            <div className="part-image-container">
+                                <img
+                                    src={part.image}
+                                    alt={part.name}
+                                    className="part-image"
+                                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'; }}
+                                />
                                 <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
                                     <span className="badge">
                                         <PartTypeIcon type={part.type} /> {part.type}

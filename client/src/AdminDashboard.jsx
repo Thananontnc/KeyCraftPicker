@@ -172,9 +172,13 @@ const AdminDashboard = () => {
 
     const handleDelete = async (id) => {
         if (!confirm('Delete this part?')) return;
-        // Implement DELETE API if needed, or just hide for now
-        // await axios.delete(`http://localhost:3000/api/parts/${id}`);
-        alert('Delete functionality to be implemented in API');
+        try {
+            await axios.delete(`http://localhost:3000/api/parts/${id}`);
+            fetchParts(); // Refresh list
+        } catch (err) {
+            console.error(err);
+            alert('Failed to delete part');
+        }
     };
 
     return (

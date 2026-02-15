@@ -23,6 +23,7 @@ const Login = () => {
             if (res.data.success) {
                 // Store user in local storage for simple persistence
                 localStorage.setItem('user', JSON.stringify(res.data.data));
+                window.dispatchEvent(new Event('auth-change'));
                 navigate('/builder'); // Redirect to builder after login
             }
         } catch (err) {
