@@ -38,41 +38,51 @@ const Part = mongoose.models.Part || mongoose.model('Part', partSchema);
 
 // 3. Define 50+ Parts
 const parts = [
-    // --- CASES (Real Tofu60 Images - Divinikey) ---
+    // --- CASES ---
     //60% Case
     { name: 'Tofu60 Redux Case - Black', type: 'case', price: 89.00, image: 'https://down-th.img.susercontent.com/file/cn-11134207-7r98o-lkninb731ohp10', specs: { layout: '60%', mountingType: 'Tray', supportedLayouts: ['60%'] } },
     { name: 'Bakeneko60 CNC - Lavender', type: 'case', price: 130.00, image: 'https://cannonkeys.com/cdn/shop/products/60-lav.jpg?v=1697755322&width=3000', specs: { layout: '60%', mountingType: 'Gummy O-ring', supportedLayouts: ['60%'] } },
     { name: 'Freebird60 Case - White', type: 'case', price: 95.00, image: 'https://keebsforall.com/cdn/shop/files/fb60white.jpg?v=1731535128&width=3000', specs: { layout: '60%', mountingType: 'Gasket', supportedLayouts: ['60%'] } },
 
-    { name: 'Tofu65 2.0 Case - Grey', type: 'case', price: 109.00, image: 'https://divinikey.com/cdn/shop/products/kbdfans-tofu60-redux-case-368883.webp?v=1695485072&width=1214', specs: { layout: '65%', mountingType: 'Gasket', supportedLayouts: ['65%'] } },
-    { name: 'KBD67 Lite R4 Case - Transparent', type: 'case', price: 109.00, image: 'https://images.unsplash.com/photo-1647228224590-7d34b3f1737e?w=600&q=80', specs: { layout: '65%', mountingType: 'Gasket', supportedLayouts: ['65%'] } },
-    { name: 'KBD67 Lite R4 Case - White', type: 'case', price: 109.00, image: 'https://images.unsplash.com/photo-1613589947849-c1920d3caa95?w=600&q=80', specs: { layout: '65%', mountingType: 'Gasket', supportedLayouts: ['65%'] } },
-    { name: 'Mode Sonnet - Navy', type: 'case', price: 299.00, image: 'https://images.unsplash.com/photo-1563191911-e65f8655ebf9?w=600&q=80', specs: { layout: '75%', mountingType: 'Isolated Top', supportedLayouts: ['75%'] } },
-    { name: 'Mode Sonnet - White', type: 'case', price: 299.00, image: 'https://images.unsplash.com/photo-1626218174523-9c86927d6d3d?w=600&q=80', specs: { layout: '75%', mountingType: 'Isolated Top', supportedLayouts: ['75%'] } },
-    { name: 'Mode Envoy - Mirage', type: 'case', price: 199.00, image: 'https://images.unsplash.com/photo-1589578228447-e1a4e481c6c8?w=600&q=80', specs: { layout: '65%', mountingType: 'Lattice Block', supportedLayouts: ['65%'] } },
-    { name: 'Zoom75 EE - Milk Tea', type: 'case', price: 189.00, image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?w=600&q=80', specs: { layout: '75%', mountingType: 'Gasket', supportedLayouts: ['75%'] } },
-    { name: 'QK65v2 - Silver', type: 'case', price: 160.00, image: 'https://images.unsplash.com/photo-1587829741301-30c00713b131?w=600&q=80', specs: { layout: '65%', mountingType: 'Gasket', supportedLayouts: ['65%'] } },
-    { name: 'Keychron Q1 Pro - Black', type: 'case', price: 179.00, image: 'https://images.unsplash.com/photo-1601445638532-3c6f6c3aa1d6?w=600&q=80', specs: { layout: '75%', mountingType: 'Gasket', supportedLayouts: ['75%'] } },
-    { name: 'Keychron Q2 - Navy', type: 'case', price: 159.00, image: 'https://images.unsplash.com/photo-1629828876413-4da7c9431f4a?w=600&q=80', specs: { layout: '65%', mountingType: 'Gasket', supportedLayouts: ['65%'] } },
-    { name: 'GMMK Pro - White', type: 'case', price: 169.99, image: 'https://images.unsplash.com/photo-1613589947849-c1920d3caa95?w=600&q=80', specs: { layout: '75%', mountingType: 'Gasket', supportedLayouts: ['75%'] } },
-    { name: 'Wooting 60HE Case', type: 'case', price: 69.00, image: 'https://divinikey.com/cdn/shop/products/kbdfans-tofu60-redux-case-368883.webp?v=1695485072&width=1214', specs: { layout: '60%', mountingType: 'Tray', supportedLayouts: ['60%'] } },
+    //75% Case
+    { name: 'GMMK Pro Barebone - Slate', type: 'case', price: 169.99, image: 'https://m.media-amazon.com/images/I/71Ay3szj8tL.jpg', specs: { layout: '75%', mountingType: 'Gasket', supportedLayouts: ['75%'] } },
+    { name: 'MonsGeek M1 - Black', type: 'case', price: 99.00, image: 'https://mercular.s3.ap-southeast-1.amazonaws.com/images/products/2023/07/Product/Product%20content/Week1/KeyMonsGeek%20M1%20Mechanical%20Keyboard%201.jpg', specs: { layout: '75%', mountingType: 'Gasket', supportedLayouts: ['75%'] } },
+    { name: 'Keychron Q1 Max', type: 'case', price: 189.00, image: 'https://content.etilize.com/enhanced-overview/en_us/505633/m6X51u5RDqCMFxmy3ZRg_r8Px1v1Eq1LQdZw', specs: { layout: '75%', mountingType: 'Gasket', supportedLayouts: ['75%'] } },
 
-    // --- PCBs (Circuit Boards / Internals) ---
+    //TKL Case
+    { name: 'Keychron Q3 Barebone', type: 'case', price: 154.00, image: 'https://www.keyboardco.com/product-images/ansi_q3_carbon_black_rgb_aluminium_barebone_knob_keyboard_large.jpg', specs: { layout: 'TKL', mountingType: 'Gasket', supportedLayouts: ['TKL'] } },
+    { name: 'Freebird TKL Case', type: 'case', price: 225.00, image: 'https://keebsforall.com/cdn/shop/products/updatedblue.png?v=1703031654&width=1920', specs: { layout: 'TKL', mountingType: 'Top Mount', supportedLayouts: ['TKL'] } },
+    { name: 'MonsGeek M3 - Silver', type: 'case', price: 109.00, image: 'https://www.monsgeek.com/wp-content/uploads/2023/04/M3-QMK-0522-8.jpg', specs: { layout: 'TKL', mountingType: 'Gasket', supportedLayouts: ['TKL'] } },
+
+    //Full-Size Case
+    { name: 'MonsGeek M5 - Black', type: 'case', price: 129.00, image: 'https://stackskb.com/wp-content/uploads/2023/11/M5-QMK%E7%89%88%E6%9C%AC-%E9%BB%91%E8%89%B2_%E5%89%8D%E4%BF%AF-1.png', specs: { layout: 'Full', mountingType: 'Gasket', supportedLayouts: ['Full'] } },
+    { name: 'Keychron Q6 Max', type: 'case', price: 199.00, image: 'https://www.keychron.co.th/cdn/shop/files/Q6-Max-1_3d821c43-d98d-428f-abd3-e1ddd852681e.jpg?v=1758539897&width=1800', specs: { layout: 'Full', mountingType: 'Gasket', supportedLayouts: ['Full'] } },
+    { name: 'Glorious GMMK 2 Full Size 96% - White', type: 'case', price: 119.99, image: 'https://www.kustompcs.co.uk/images/detailed/47/29337.jpg', specs: { layout: 'Full', mountingType: 'Tray', supportedLayouts: ['Full'] } },
+
+
+    // --- PCBs ---
     // 60% PCBs
     { name: 'DZ60 RGB V2 Hot-swap', type: 'pcb', price: 58.00, image: 'https://kbdfans.com/cdn/shop/products/DZ60RGBANSI-2000.jpg?v=1627521245', specs: { layout: '60%', mountingType: 'Tray', switchSupport: '5-pin', hotSwap: true } },
     { name: 'Instant60 PCB', type: 'pcb', price: 62.00, image: 'https://cannonkeys.com/cdn/shop/products/instant60-tsangan-top.jpg?v=1709145358&width=1500', specs: { layout: '60%', mountingType: 'Tray', switchSupport: '5-pin', hotSwap: true } },
     { name: 'BM60 RGB ISO', type: 'pcb', price: 45.00, image: 'https://kprepublic.com/cdn/shop/products/Ha897ea2223f94af8829a92ebd1a771feh.jpg?v=1597062705', specs: { layout: '60%', mountingType: 'Tray', switchSupport: '3-pin', hotSwap: true } },
 
-    { name: 'Mode Sonnet PCB - Hotswap', type: 'pcb', price: 65.00, image: 'https://images.unsplash.com/photo-1618335829731-55950284ddce?w=600&q=80', specs: { layout: '75%', mountingType: 'Isolated Top', switchSupport: '5-pin', hotSwap: true } },
-    { name: 'Mode Envoy PCB - Solder', type: 'pcb', price: 45.00, image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80', specs: { layout: '65%', mountingType: 'Lattice Block', switchSupport: '5-pin', hotSwap: false } },
-    { name: 'Zoom75 Tri-mode PCB', type: 'pcb', price: 75.00, image: 'https://images.unsplash.com/photo-1555617912-436c04516ba6?w=600&q=80', specs: { layout: '75%', mountingType: 'Gasket', switchSupport: '5-pin', hotSwap: true } },
-    { name: 'Keychron Q1 PCB', type: 'pcb', price: 49.00, image: 'https://images.unsplash.com/photo-1618335829731-55950284ddce?w=600&q=80', specs: { layout: '75%', mountingType: 'Gasket', switchSupport: '5-pin', hotSwap: true } },
-    { name: 'Hineybush h87a', type: 'pcb', price: 55.00, image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80', specs: { layout: 'TKL', mountingType: 'Top', switchSupport: '5-pin', hotSwap: false } },
-    { name: 'Wilba.tech WT60-D', type: 'pcb', price: 60.00, image: 'https://images.unsplash.com/photo-1555617912-436c04516ba6?w=600&q=80', specs: { layout: '60%', mountingType: 'Tray', switchSupport: '5-pin', hotSwap: false } },
-    { name: '1up Keyboards 60% HSE PCB', type: 'pcb', price: 45.00, image: 'https://images.unsplash.com/photo-1618335829731-55950284ddce?w=600&q=80', specs: { layout: '60%', mountingType: 'Tray', switchSupport: '3-pin', hotSwap: true } },
+    //75 PCBs
+    { name: 'GMMK Pro Hot-swap PCB', type: 'pcb', price: 65.00, image: 'https://images.squarespace-cdn.com/content/v1/4f31dc46cb127c78280cc974/1623410989173-XGL9H0F8DT3CJP7FNKQ4/JAS_9895.jpg', specs: { layout: '75%', mountingType: 'Gasket', switchSupport: '5-pin', hotSwap: true } },
+    { name: 'M1 Hot-swap PCB', type: 'pcb', price: 45.00, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEo6hTmWIcd2Alvjd7FozZ6TkUp-tr1s29uA&s', specs: { layout: '75%', mountingType: 'Gasket', switchSupport: '5-pin', hotSwap: true } },
+    { name: 'Q1 RGB PCB', type: 'pcb', price: 60.00, image: 'https://images.mmorpg.com/images/contentImages/382021/Keychron-Q1-PCB-Foam.jpg', specs: { layout: '75%', mountingType: 'Gasket', switchSupport: '3-pin', hotSwap: true } },
 
-    // --- SWITCHES (Real Oil King Images - Divinikey) ---
-    { name: 'Gateron Oil King (10 pcs)', type: 'switch', price: 6.50, image: 'https://divinikey.com/cdn/shop/products/gateron-oil-king-linear-switches-389141.jpg?v=1642045846&width=1214', specs: { brand: 'Gateron', switchType: 'Linear', pricePerUnit: 0.65 } },
+    //TKL PCBs
+    { name: 'M5 Full PCB', type: 'pcb', price: 55.00, image: 'https://www.keyboardkustoms.com/cdn/shop/products/Q3_PE_800x.jpg?v=1656693455', specs: { layout: 'TKL', mountingType: 'Gasket', switchSupport: '5-pin', hotSwap: true } },
+    { name: 'Phantom TKL PCB', type: 'pcb', price: 50.00, image: 'https://mechanicalkeyboards.com/cdn/shop/files/1221-MW6R6-Phantom-PCB-Dual-Layer-Tenkeyless-Electrical-Board.jpg?v=1708533351&width=750', specs: { layout: 'TKL', mountingType: 'Universal', switchSupport: '3-pin', hotSwap: true } },
+    { name: 'M3 RGB Hot-swap PCB', type: 'pcb', price: 48.00, image: 'https://mechanicalkeyboards.com/cdn/shop/files/9680_6290fce97360a_MK61-Hotswap-PCB-ANSI-60-RGB-QMK-VIA-compatible.jpg?v=1707264202', specs: { layout: 'TKL', mountingType: 'Gasket', switchSupport: '5-pin', hotSwap: true } },
+
+    //Full-Size PCBs
+    { name: 'Q3 Hot-swap PCB', type: 'pcb', price: 65.00, image: 'https://img.danawa.com/images/descFiles/6/501/5500501_n8azN0tur7_1703422434070.jpeg', specs: { layout: 'Full', mountingType: 'Gasket', switchSupport: '5-pin', hotSwap: true } },
+    { name: 'Q6 Hot-swap PCB', type: 'pcb', price: 70.00, image: 'https://i.etsystatic.com/35181042/r/il/38b400/7410302391/il_300x300.7410302391_q5hl.jpg', specs: { layout: 'Full', mountingType: 'Gasket', switchSupport: '5-pin', hotSwap: true } },
+    { name: 'M3 RGB Hot-swap PCB', type: 'pcb', price: 38.00, image: 'https://m.media-amazon.com/images/I/513AP38flPL._AC_UF1000,1000_QL80_.jpg', specs: { layout: 'Full', mountingType: 'Tray', switchSupport: '3-pin', hotSwap: true } },
+
+    // --- SWITCHES ---
+    { name: 'Akko V3 Cream Yellow (10 pcs)', type: 'switch', price: 3.50, image: 'https://monsgeek.eu/cdn/shop/files/V3-Cream-Yellow-Pro-Switch-2.png?v=1696825271&width=1500', specs: { brand: 'Akko', switchType: 'Linear', pricePerUnit: 0.75 } },
     { name: 'Gateron Ink Black V2 (10 pcs)', type: 'switch', price: 7.50, image: 'https://divinikey.com/cdn/shop/products/gateron-oil-king-linear-switches-389141.jpg?v=1642045846&width=1214', specs: { brand: 'Gateron', switchType: 'Linear', pricePerUnit: 0.75 } },
     { name: 'Cherry MX Black (10 pcs)', type: 'switch', price: 4.00, image: 'https://images.unsplash.com/photo-1533158388470-9a56699990c6?w=600&q=80', specs: { brand: 'Cherry', switchType: 'Linear', pricePerUnit: 0.40 } },
     { name: 'Cherry MX Blue (10 pcs)', type: 'switch', price: 4.00, image: 'https://images.unsplash.com/photo-1552550186-b4845dc278be?w=600&q=80', specs: { brand: 'Cherry', switchType: 'Clicky', pricePerUnit: 0.40 } },
