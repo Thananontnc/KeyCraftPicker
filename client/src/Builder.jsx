@@ -223,11 +223,12 @@ const Builder = () => {
                                     <h3 style={{ textTransform: 'uppercase', fontSize: '0.9rem', color: 'var(--text-muted)', letterSpacing: '1px' }}>{type}</h3>
                                     <div style={{ fontSize: '1.3rem', fontWeight: '800', marginBottom: '0.5rem', lineHeight: '1.2' }}>{build[type].name}</div>
                                     <p className="price" style={{ fontSize: '1.5rem', color: 'var(--brick-blue)' }}>${build[type].price}</p>
-                                    <button onClick={() => fetchPartsForSlot(type)} className="btn-sm" style={{
+                                    <button onClick={() => fetchPartsForSlot(type)} style={{
                                         width: '100%', justifyContent: 'center', marginTop: '1rem',
                                         background: 'var(--brick-black)', color: 'white',
                                         border: 'none', borderRadius: '8px', padding: '0.8rem',
-                                        fontSize: '1rem', fontWeight: 'bold'
+                                        fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer',
+                                        boxShadow: '4px 4px 0px rgba(0,0,0,0.1)'
                                     }}>Change Part</button>
                                 </div>
                             </>
