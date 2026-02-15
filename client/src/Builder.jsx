@@ -99,6 +99,44 @@ const Builder = () => {
         }
     };
 
+    const [showCompatibleOnly, setShowCompatibleOnly] = useState(true);
+
+    const isPartCompatible = (part) => {
+        if (!part || !part.specs) return true;
+
+        // 1. Case <-> PCB Compatibility
+        if (activeSlot === 'pcb' && build.case) {
+            // Layout mismatch
+            if (!build.case.specs.supportedLayouts.includes(part.specs.layout)) return false;
+            // Mounting mismatch (Strict for now)
+            if (build.case.specs.mountingType !== part.specs.mountingType) return false;
+        }
+        if (activeSlot === 'case' && build.pcb) {
+            if (!part.specs.supportedLayouts.includes(build.pcb.specs.layout)) return false;
+            if (part.specs.mountingType !== build.pcb.specs.mountingType) return false;
+        }
+
+        // 2. PCB <-> Switch Compatibility
+        if (activeSlot === 'switch' && build.pcb) {
+            // Optical vs Mechanical (socketType not strictly defined in seed yet, assuming standard mechanical for now)
+            // If PCB is 3-pin (hotSwap: false or specific spec), and Switch is 5-pin?
+            // Simplified: If PCB says "switchSupport: '3-pin'" and switch is 5-pin -> Incompatible
+            if (build.pcb.specs.switchSupport === '3-pin' && part.specs.pinType === '5-pin') return false;
+        }
+
+        // 3. PCB <-> Keycap Compatibility
+        if (activeSlot === 'keycap' && build.pcb) {
+            // Basic layout check
+            if (part.specs.layoutSupport && !part.specs.layoutSupport.includes(build.pcb.specs.layout)) return false;
+        }
+
+        return true;
+    };
+
+    const filteredParts = showCompatibleOnly
+        ? parts.filter(isPartCompatible)
+        : parts;
+
     return (
         <div className="page-container" style={{ textAlign: 'left', marginTop: '2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
@@ -188,30 +226,65 @@ const Builder = () => {
                         width: '100%', maxWidth: '900px', maxHeight: '85vh',
                         display: 'flex', flexDirection: 'column', padding: '0', overflow: 'hidden'
                     }}>
-                        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.2)' }}>
-                            <h2 style={{ textTransform: 'capitalize' }}>Select {activeSlot}</h2>
+                        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.03)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <h2 style={{ textTransform: 'capitalize', margin: 0 }}>Select {activeSlot}</h2>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', cursor: 'pointer', background: 'var(--brick-blue)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '20px' }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={showCompatibleOnly}
+                                        onChange={(e) => setShowCompatibleOnly(e.target.checked)}
+                                        style={{ accentColor: 'white' }}
+                                    />
+                                    Show Compatible Only ({filteredParts.length})
+                                </label>
+                            </div>
                             <button onClick={() => setActiveSlot(null)} className="btn-sm" style={{ border: 'none', background: 'transparent' }}><X size={24} /></button>
                         </div>
 
                         <div style={{ overflowY: 'auto', padding: '1.5rem' }}>
-                            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
-                                {parts.map(part => (
-                                    <div key={part._id} className="card part-card" onClick={() => selectPart(part)} style={{ cursor: 'pointer', border: '1px solid var(--border-hover)' }}>
-                                        <div className="part-image-container" style={{ height: '140px' }}>
-                                            <img
-                                                src={part.image}
-                                                alt={part.name}
-                                                className="part-image"
-                                                onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'; }}
-                                            />
+                            {filteredParts.length === 0 ? (
+                                <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+                                    <p>No compatible parts found for your current build.</p>
+                                    <p style={{ fontSize: '0.9rem' }}>Try unchecking "Show Compatible Only" to see all options.</p>
+                                </div>
+                            ) : (
+                                <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
+                                    {filteredParts.map(part => (
+                                        <div key={part._id} className="card part-card" onClick={() => selectPart(part)} style={{ cursor: 'pointer', border: '1px solid var(--border-hover)' }}>
+                                            <div className="part-image-container" style={{ height: '140px' }}>
+                                                <img
+                                                    src={part.image}
+                                                    alt={part.name}
+                                                    className="part-image"
+                                                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'; }}
+                                                />
+                                                {/* Recommended Badge */}
+                                                {isPartCompatible(part) && (
+                                                    <div style={{
+                                                        position: 'absolute', top: '8px', right: '8px',
+                                                        background: 'var(--success-color)', color: 'white',
+                                                        fontSize: '0.75rem', fontWeight: '700',
+                                                        padding: '2px 8px', borderRadius: '12px',
+                                                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                                    }}>
+                                                        Recommended
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="part-info" style={{ padding: '1rem' }}>
+                                                <h4 style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>{part.name}</h4>
+                                                <p className="price" style={{ fontSize: '1.1rem' }}>${part.price}</p>
+                                                {!isPartCompatible(part) && (
+                                                    <div style={{ fontSize: '0.8rem', color: 'var(--brick-red)', marginTop: '0.5rem', fontWeight: '600' }}>
+                                                        Incompatible
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className="part-info" style={{ padding: '1rem' }}>
-                                            <h4 style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>{part.name}</h4>
-                                            <p className="price" style={{ fontSize: '1.1rem' }}>${part.price}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
