@@ -139,26 +139,43 @@ const Builder = () => {
 
     return (
         <div className="page-container" style={{ textAlign: 'left', marginTop: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
-                    <h1 style={{ fontSize: '2.5rem', fontWeight: '700' }}>Keyboard Builder</h1>
-                    <p style={{ color: 'var(--text-muted)' }}>Select components to visualize your custom keyboard.</p>
+                    <h1 style={{
+                        fontSize: '3rem', fontWeight: '900', color: 'var(--brick-red)',
+                        textTransform: 'uppercase', letterSpacing: '-1px',
+                        textShadow: '3px 3px 0px rgba(0,0,0,0.1)'
+                    }}>Keyboard Builder</h1>
+                    <p style={{ fontSize: '1.2rem', fontWeight: '600', color: '#555' }}>Drag, drop, and click to build your dream board.</p>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                    <h2 className="price" style={{ marginBottom: '0.5rem' }}>Total: ${calculateTotal()}</h2>
-                    <button onClick={handleSave} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Save size={18} /> Save Build
+                <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                    <div style={{
+                        background: 'var(--brick-yellow)',
+                        padding: '0.5rem 1.5rem',
+                        borderRadius: '12px',
+                        border: '3px solid var(--brick-black)',
+                        boxShadow: '4px 4px 0px rgba(0,0,0,0.1)'
+                    }}>
+                        <h2 className="price" style={{ margin: 0, fontSize: '1.8rem', fontWeight: '800' }}>Total: ${calculateTotal()}</h2>
+                    </div>
+                    <button onClick={handleSave} className="btn-primary" style={{
+                        display: 'flex', alignItems: 'center', gap: '0.5rem',
+                        border: '3px solid var(--brick-black)',
+                        boxShadow: '4px 4px 0px rgba(0,0,0,0.2)',
+                        transform: 'rotate(-1deg)'
+                    }}>
+                        <Save size={20} /> Save Build
                     </button>
                 </div>
             </div>
 
             {/* Compatibility Status */}
             {!compatibility.compatible && (
-                <div className="alert-error" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', marginBottom: '2rem' }}>
-                    <AlertTriangle size={24} />
+                <div className="alert-error" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', marginBottom: '2rem', border: '3px solid var(--brick-red)', background: '#fee2e2' }}>
+                    <AlertTriangle size={24} color="var(--brick-red)" />
                     <div>
-                        <strong>Compatibility Issues Found:</strong>
-                        <ul style={{ paddingLeft: '1.5rem', marginTop: '0.5rem' }}>
+                        <strong style={{ color: 'var(--brick-red)', fontSize: '1.1rem' }}>Compatibility Issues Found:</strong>
+                        <ul style={{ paddingLeft: '1.5rem', marginTop: '0.5rem', color: '#b91c1c' }}>
                             {compatibility.issues.map((issue, i) => (
                                 <li key={i}>{issue}</li>
                             ))}
@@ -171,9 +188,12 @@ const Builder = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.75rem',
-                    marginBottom: '2rem'
+                    marginBottom: '2rem',
+                    border: '3px solid var(--brick-green)',
+                    background: '#dcfce7',
+                    boxShadow: '4px 4px 0px rgba(0,0,0,0.05)'
                 }}>
-                    <CheckCircle size={24} /> <span style={{ fontWeight: '700', fontSize: '1.1rem' }}>All parts compatible so far!</span>
+                    <CheckCircle size={24} color="var(--brick-green)" /> <span style={{ fontWeight: '800', fontSize: '1.2rem', color: 'var(--brick-green)' }}>All parts compatible!</span>
                 </div>
             )}
 
@@ -182,13 +202,16 @@ const Builder = () => {
                 {['case', 'pcb', 'switch', 'keycap'].map(type => (
                     <div key={type} className="card part-card" style={{
                         borderStyle: build[type] ? 'solid' : 'dashed',
-                        borderColor: build[type] ? 'var(--border-color)' : 'var(--brick-grey)',
-                        background: build[type] ? 'white' : '#f4f4f5',
-                        borderWidth: '3px'
+                        borderColor: build[type] ? 'var(--brick-black)' : 'var(--brick-grey)',
+                        background: build[type] ? 'white' : 'rgba(0,0,0,0.03)',
+                        borderWidth: '3px',
+                        boxShadow: build[type] ? '8px 8px 0px rgba(0,0,0,0.1)' : 'none',
+                        transition: 'transform 0.2s',
+                        transform: build[type] ? 'translate(-2px, -2px)' : 'none'
                     }}>
                         {build[type] ? (
                             <>
-                                <div className="part-image-container" style={{ height: '160px' }}>
+                                <div className="part-image-container" style={{ height: '180px', borderBottom: '3px solid var(--brick-black)' }}>
                                     <img
                                         src={build[type].image}
                                         alt={build[type].name}
@@ -196,17 +219,39 @@ const Builder = () => {
                                         onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'; }}
                                     />
                                 </div>
-                                <div className="part-info">
-                                    <h3 style={{ textTransform: 'capitalize' }}>{type}</h3>
-                                    <div style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '0.5rem' }}>{build[type].name}</div>
-                                    <p className="price" style={{ fontSize: '1.25rem' }}>${build[type].price}</p>
-                                    <button onClick={() => fetchPartsForSlot(type)} className="btn-sm" style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>Change</button>
+                                <div className="part-info" style={{ padding: '1.5rem' }}>
+                                    <h3 style={{ textTransform: 'uppercase', fontSize: '0.9rem', color: 'var(--text-muted)', letterSpacing: '1px' }}>{type}</h3>
+                                    <div style={{ fontSize: '1.3rem', fontWeight: '800', marginBottom: '0.5rem', lineHeight: '1.2' }}>{build[type].name}</div>
+                                    <p className="price" style={{ fontSize: '1.5rem', color: 'var(--brick-blue)' }}>${build[type].price}</p>
+                                    <button onClick={() => fetchPartsForSlot(type)} className="btn-sm" style={{
+                                        width: '100%', justifyContent: 'center', marginTop: '1rem',
+                                        background: 'var(--brick-black)', color: 'white',
+                                        border: 'none', borderRadius: '8px', padding: '0.8rem',
+                                        fontSize: '1rem', fontWeight: 'bold'
+                                    }}>Change Part</button>
                                 </div>
                             </>
                         ) : (
                             <div style={{ padding: '4rem 1rem', textAlign: 'center', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                                <h3 style={{ textTransform: 'uppercase', letterSpacing: '1px', fontSize: '1rem', marginBottom: '1rem', color: 'var(--brick-grey)' }}>Select {type}</h3>
-                                <button onClick={() => fetchPartsForSlot(type)} className="btn-primary" style={{ padding: '0.5rem 1.5rem' }}>+ Add Block</button>
+                                <div style={{
+                                    width: '60px', height: '60px', borderRadius: '50%',
+                                    border: '3px dashed var(--brick-grey)',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    marginBottom: '1rem', color: 'var(--brick-grey)'
+                                }}>
+                                    <span style={{ fontSize: '2rem', fontWeight: '300' }}>+</span>
+                                </div>
+                                <h3 style={{ textTransform: 'uppercase', letterSpacing: '2px', fontSize: '1.2rem', marginBottom: '1.5rem', color: 'var(--brick-grey)', fontWeight: '800' }}>Select {type}</h3>
+                                <button onClick={() => fetchPartsForSlot(type)} className="btn-primary" style={{
+                                    padding: '0.8rem 2rem',
+                                    background: 'white', color: 'var(--brick-blue)',
+                                    border: '3px solid var(--brick-blue)',
+                                    boxShadow: '4px 4px 0px var(--brick-blue)',
+                                    transition: 'transform 0.1s'
+                                }}
+                                    onMouseDown={(e) => e.target.style.transform = 'translate(2px, 2px)'}
+                                    onMouseUp={(e) => e.target.style.transform = 'none'}
+                                >+ Add Block</button>
                             </div>
                         )}
                     </div>
