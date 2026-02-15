@@ -226,20 +226,35 @@ const Builder = () => {
                         width: '100%', maxWidth: '900px', maxHeight: '85vh',
                         display: 'flex', flexDirection: 'column', padding: '0', overflow: 'hidden'
                     }}>
-                        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.03)' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <h2 style={{ textTransform: 'capitalize', margin: 0 }}>Select {activeSlot}</h2>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', cursor: 'pointer', background: 'var(--brick-blue)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '20px' }}>
+                        <div style={{
+                            padding: '1.5rem',
+                            borderBottom: '4px solid var(--brick-black)',
+                            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                            background: 'repeating-linear-gradient(45deg, var(--brick-yellow) 0, var(--brick-yellow) 10px, #facc15 10px, #facc15 20px)'
+                        }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'white', padding: '0.5rem 1.5rem', borderRadius: '12px', border: '3px solid var(--brick-black)', boxShadow: '4px 4px 0px rgba(0,0,0,0.1)' }}>
+                                <h2 style={{ textTransform: 'capitalize', margin: 0, fontSize: '1.8rem', color: 'var(--brick-black)', fontWeight: '900' }}>{activeSlot}</h2>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem', cursor: 'pointer', userSelect: 'none', color: 'var(--text-main)', fontWeight: '600' }}>
                                     <input
                                         type="checkbox"
                                         checked={showCompatibleOnly}
                                         onChange={(e) => setShowCompatibleOnly(e.target.checked)}
-                                        style={{ accentColor: 'white' }}
+                                        style={{ width: '20px', height: '20px', accentColor: 'var(--brick-blue)', cursor: 'pointer' }}
                                     />
-                                    Show Compatible Only ({filteredParts.length})
+                                    <span style={{ opacity: showCompatibleOnly ? 1 : 0.6 }}>Compatible Only</span>
+                                    {showCompatibleOnly && <span style={{ fontSize: '0.85rem', background: 'var(--brick-blue)', padding: '2px 8px', borderRadius: '12px', color: 'white' }}>{filteredParts.length}</span>}
                                 </label>
                             </div>
-                            <button onClick={() => setActiveSlot(null)} className="btn-sm" style={{ border: 'none', background: 'transparent' }}><X size={24} /></button>
+                            <button onClick={() => setActiveSlot(null)} className="btn-sm" style={{
+                                border: '3px solid var(--brick-black)',
+                                background: 'var(--brick-red)',
+                                color: 'white',
+                                borderRadius: '8px',
+                                width: '40px', height: '40px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                boxShadow: '4px 4px 0px rgba(0,0,0,0.2)',
+                                cursor: 'pointer'
+                            }}><X size={28} /></button>
                         </div>
 
                         <div style={{ overflowY: 'auto', padding: '1.5rem' }}>
