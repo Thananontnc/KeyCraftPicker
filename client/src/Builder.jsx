@@ -227,19 +227,19 @@ const Builder = () => {
                         display: 'flex', flexDirection: 'column', padding: '0', overflow: 'hidden'
                     }}>
                         <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.03)' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <h2 style={{ textTransform: 'capitalize', margin: 0 }}>Select {activeSlot}</h2>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', cursor: 'pointer', background: 'var(--brick-blue)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '20px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                                <h2 style={{ textTransform: 'capitalize', margin: 0, fontSize: '1.8rem', color: 'var(--text-main)' }}>Select {activeSlot}</h2>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem', cursor: 'pointer', userSelect: 'none', color: 'var(--text-secondary)' }}>
                                     <input
                                         type="checkbox"
                                         checked={showCompatibleOnly}
                                         onChange={(e) => setShowCompatibleOnly(e.target.checked)}
-                                        style={{ accentColor: 'white' }}
+                                        style={{ width: '18px', height: '18px', accentColor: 'var(--brick-blue)' }}
                                     />
-                                    Show Compatible Only ({filteredParts.length})
+                                    Show Compatible Only <span style={{ fontSize: '0.85rem', background: '#e5e7eb', padding: '2px 8px', borderRadius: '12px', color: '#374151' }}>{filteredParts.length}</span>
                                 </label>
                             </div>
-                            <button onClick={() => setActiveSlot(null)} className="btn-sm" style={{ border: 'none', background: 'transparent' }}><X size={24} /></button>
+                            <button onClick={() => setActiveSlot(null)} className="btn-sm" style={{ border: 'none', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer' }}><X size={28} /></button>
                         </div>
 
                         <div style={{ overflowY: 'auto', padding: '1.5rem' }}>
