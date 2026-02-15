@@ -42,10 +42,15 @@ export async function GET(request) {
     await dbConnect();
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
+    const search = searchParams.get('search');
 
     let query = {};
     if (type) {
         query.type = type;
+    }
+    if (search) {
+        // Case-insensitive regex search on 'name'
+        query.name = { $regex: search, $options: 'i' };
     }
 
     try {
