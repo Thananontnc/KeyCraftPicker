@@ -249,10 +249,20 @@ const Builder = () => {
                                     <p style={{ fontSize: '0.9rem' }}>Try unchecking "Show Compatible Only" to see all options.</p>
                                 </div>
                             ) : (
-                                <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
+                                <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '2rem' }}>
                                     {filteredParts.map(part => (
-                                        <div key={part._id} className="card part-card" onClick={() => selectPart(part)} style={{ cursor: 'pointer', border: '1px solid var(--border-hover)' }}>
-                                            <div className="part-image-container" style={{ height: '140px' }}>
+                                        <div key={part._id} className="card part-card" onClick={() => selectPart(part)} style={{
+                                            cursor: 'pointer',
+                                            border: '3px solid var(--brick-black)',
+                                            boxShadow: '6px 6px 0px rgba(0,0,0,0.1)',
+                                            transition: 'transform 0.1s',
+                                            position: 'relative',
+                                            overflow: 'hidden'
+                                        }}
+                                            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translate(-2px, -2px)'; e.currentTarget.style.boxShadow = '8px 8px 0px rgba(0,0,0,0.15)'; }}
+                                            onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '6px 6px 0px rgba(0,0,0,0.1)'; }}
+                                        >
+                                            <div className="part-image-container" style={{ height: '160px', borderBottom: '3px solid var(--brick-black)' }}>
                                                 <img
                                                     src={part.image}
                                                     alt={part.name}
@@ -262,22 +272,30 @@ const Builder = () => {
                                                 {/* Recommended Badge */}
                                                 {isPartCompatible(part) && (
                                                     <div style={{
-                                                        position: 'absolute', top: '8px', right: '8px',
-                                                        background: 'var(--success-color)', color: 'white',
-                                                        fontSize: '0.75rem', fontWeight: '700',
-                                                        padding: '2px 8px', borderRadius: '12px',
-                                                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                                        position: 'absolute', top: '10px', right: '10px',
+                                                        background: 'var(--brick-green)', color: 'white',
+                                                        fontSize: '0.8rem', fontWeight: '800',
+                                                        padding: '4px 10px', borderRadius: '20px',
+                                                        border: '2px solid var(--brick-black)',
+                                                        boxShadow: '2px 2px 0px rgba(0,0,0,0.2)',
+                                                        zIndex: 2,
+                                                        textTransform: 'uppercase',
+                                                        letterSpacing: '0.5px'
                                                     }}>
-                                                        Recommended
+                                                        Best Match
                                                     </div>
                                                 )}
                                             </div>
-                                            <div className="part-info" style={{ padding: '1rem' }}>
-                                                <h4 style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>{part.name}</h4>
-                                                <p className="price" style={{ fontSize: '1.1rem' }}>${part.price}</p>
+                                            <div className="part-info" style={{ padding: '1.2rem' }}>
+                                                <h4 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', fontWeight: '800', lineHeight: '1.3' }}>{part.name}</h4>
+                                                <p className="price" style={{ fontSize: '1.3rem', color: 'var(--brick-blue)' }}>${part.price}</p>
                                                 {!isPartCompatible(part) && (
-                                                    <div style={{ fontSize: '0.8rem', color: 'var(--brick-red)', marginTop: '0.5rem', fontWeight: '600' }}>
-                                                        Incompatible
+                                                    <div style={{
+                                                        fontSize: '0.85rem', color: 'var(--brick-red)',
+                                                        marginTop: '0.8rem', fontWeight: '700',
+                                                        display: 'flex', alignItems: 'center', gap: '0.4rem'
+                                                    }}>
+                                                        <AlertTriangle size={14} /> Incompatible
                                                     </div>
                                                 )}
                                             </div>
