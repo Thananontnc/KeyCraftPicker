@@ -150,34 +150,84 @@ a {
   transform: none;
 }
 
+/* Redesigned Auth Links in Navbar */
 .auth-links {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  gap: 1.5rem;
   justify-self: end;
+  align-items: center;
 }
 
-.auth-links .btn-sm {
-  background: white;
-  color: var(--text-main);
-  border: 3px solid var(--border-color);
-  box-shadow: 3px 3px 0 rgba(0, 0, 0, 1);
-  font-weight: 800;
-  padding: 0.4rem 1.5rem;
-  border-radius: 8px;
-  text-transform: capitalize;
+.auth-links a {
   font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-main);
+  position: relative;
+  transition: all 0.2s;
 }
 
-.auth-links .btn-sm:hover {
+.auth-links a:hover {
+  color: var(--brick-blue);
+  transform: translateY(-1px);
+}
+
+/* Optional: Make Register stand out slightly */
+.auth-links a[href="/register"] {
+  background: var(--brick-yellow);
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+  border: 2px solid var(--border-color);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 1);
+}
+
+.auth-links a[href="/register"]:hover {
+  background: var(--brick-red);
+  color: white;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 1);
   transform: translate(-1px, -1px);
-  box-shadow: 5px 5px 0 rgba(0, 0, 0, 1);
-  background: white;
+  border-color: var(--border-color);
 }
 
-.auth-links .btn-sm:active {
-  transform: translate(2px, 2px);
+.auth-links a[href="/register"]:active {
+  transform: translate(1px, 1px);
   box-shadow: 1px 1px 0 rgba(0, 0, 0, 1);
+}
+
+.user-greeting {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-main);
+  background: white;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  border: 2px solid var(--border-color);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-logout {
+  background: white;
+  border: 2px solid var(--border-color) !important;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.btn-logout:hover {
+  background: #FFCDD2 !important;
+  /* Light Red */
+  border-color: #B71C1C !important;
+  color: #B71C1C;
+  transform: translateY(-1px);
 }
 
 /* Base Components */
@@ -259,14 +309,28 @@ a {
   border-color: var(--border-color);
 }
 
-.part-image {
+.part-image-container {
   height: 180px;
   width: 100%;
-  background-size: cover;
-  background-position: center;
   border-bottom: var(--border-width) solid var(--border-color);
   position: relative;
   background-color: #fff;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.part-image {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  padding: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.part-image:hover {
+  transform: scale(1.05);
 }
 
 .part-info {

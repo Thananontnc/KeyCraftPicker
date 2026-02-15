@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Clock, DollarSign } from 'lucide-react';
+import { Clock, DollarSign, Trash2 } from 'lucide-react';
 
 const UserBuilds = () => {
     const [builds, setBuilds] = useState([]);
@@ -31,6 +31,17 @@ const UserBuilds = () => {
         }
     };
 
+    const handleDelete = async (id) => {
+        if (!confirm('Are you sure you want to delete this build?')) return;
+        try {
+            await axios.delete(`http://localhost:3000/api/builds/${id}`);
+            setBuilds(builds.filter(build => build._id !== id));
+        } catch (err) {
+            console.error('Failed to delete build', err);
+            alert('Failed to delete build');
+        }
+    };
+
     if (loading) return <div className="page-container"><p>Loading builds...</p></div>;
 
     return (
@@ -44,9 +55,25 @@ const UserBuilds = () => {
             ) : (
                 <div className="grid">
                     {builds.map(build => (
-                        <div key={build._id} className="card part-card" style={{ padding: '1.5rem' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>
-                                <h3 style={{ fontSize: '1.25rem' }}>{build.name}</h3>
+                        <div key={build._id} className="card part-card" style={{ padding: '1.5rem', position: 'relative' }}>
+                            <button
+                                onClick={() => handleDelete(build._id)}
+                                className="btn-sm"
+                                style={{
+                                    position: 'absolute',
+                                    top: '1rem',
+                                    right: '1rem',
+                                    color: 'var(--brick-red)',
+                                    borderColor: 'transparent',
+                                    background: 'transparent'
+                                }}
+                                title="Delete Build"
+                            >
+                                <Trash2 size={18} />
+                            </button>
+
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', paddingRight: '2rem' }}>
+                                <h3 style={{ fontSize: '1.25rem', margin: 0 }}>{build.name}</h3>
                                 <span className="price">${build.totalPrice.toFixed(2)}</span>
                             </div>
 
