@@ -17,6 +17,7 @@ export async function POST(request) {
         ]);
 
         const issues = [];
+        const warnings = [];
 
         // --- Compatibility Logic ---
 
@@ -44,13 +45,21 @@ export async function POST(request) {
 
         // 2. PCB & Switch
         if (pcbObj && switchObj) {
-            const socketType = pcbObj.specs.get('socketType'); // 'Hotswap', 'Solder'
+            const socketType = pcbObj.specs.get('socketType') || 'Mechanical'; // Default to Mechanical if missing
+            const switchTech = switchObj.specs.get('technology') || 'Mechanical'; // Default to Mechanical
+
             const switchPin = switchObj.specs.get('pinType'); // '3-pin', '5-pin'
             const pcbSupport = pcbObj.specs.get('switchSupport'); // '3-pin', '5-pin', 'Both'
 
-            // Pin Check
+            // A. Technology Check (Optical vs Mechanical) -> HARD ERROR
+            if (socketType !== switchTech) {
+                issues.push(`Technology Mismatch: PCB is ${socketType} but Switch is ${switchTech}. They are physically incompatible.`);
+            }
+
+            // B. Pin Check -> WARNING (Soft Error)
+            // If PCB is 3-pin and Switch is 5-pin, it fits BUT requires clipping legs.
             if (pcbSupport === '3-pin' && switchPin === '5-pin') {
-                issues.push(`Pin Mismatch: PCB only supports 3-pin switches, but you selected a 5-pin switch. (Requires clipping legs)`);
+                warnings.push(`Pin Mismatch: Switch has 5 pins but PCB only supports 3. You will need to clip the 2 extra plastic legs for it to fit.`);
             }
         }
 
@@ -64,7 +73,8 @@ export async function POST(request) {
         return NextResponse.json({
             success: true,
             compatible: issues.length === 0,
-            issues
+            issues,
+            warnings
         }, { status: 200 });
 
     } catch (error) {
