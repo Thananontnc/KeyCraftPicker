@@ -40,8 +40,6 @@ export async function POST(request) {
                     && pcbMount === 'Tray'
                     && pcbLayout === '60%'; // Only allow this exception for 60% form factor
 
-                // This is strict. Real world might be looser (e.g. Tray mount pcb fits many). 
-                // For this project, let's keep it simple: if defined, must match.
                 if (pcbMount && !isUniversal60) {
                     issues.push(`Mounting Mismatch: Case is ${caseMount} but PCB expects ${pcbMount}`);
                 }
@@ -55,14 +53,10 @@ export async function POST(request) {
 
             const switchPin = switchObj.specs.get('pinType'); // '3-pin', '5-pin'
             const pcbSupport = pcbObj.specs.get('switchSupport'); // '3-pin', '5-pin', 'Both'
-
-            // A. Technology Check (Optical vs Mechanical) -> HARD ERROR
             if (socketType !== switchTech) {
                 issues.push(`Technology Mismatch: PCB is ${socketType} but Switch is ${switchTech}. They are physically incompatible.`);
             }
 
-            // B. Pin Check -> WARNING (Soft Error)
-            // If PCB is 3-pin and Switch is 5-pin, it fits BUT requires clipping legs.
             if (pcbSupport === '3-pin' && switchPin === '5-pin') {
                 warnings.push(`Pin Mismatch: Switch has 5 pins but PCB only supports 3. You will need to clip the 2 extra plastic legs for it to fit.`);
             }
@@ -70,9 +64,6 @@ export async function POST(request) {
 
         // 3. Keycap & Layout (Simplified)
         if (keycapObj && pcbObj) {
-            // Naive check: does keycap set name imply layout support?
-            // In real app, we'd check key sizes.
-            // Here, let's just assume standard unless specified.
         }
 
         return NextResponse.json({

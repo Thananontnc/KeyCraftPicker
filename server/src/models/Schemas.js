@@ -21,6 +21,15 @@ const UserSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    avatar: {
+        type: String, // URL/Path to image
+        default: '',
+    },
+    bio: {
+        type: String,
+        maxlength: [160, 'Bio cannot be more than 160 characters'],
+        default: '',
+    },
 });
 
 // --- Part Schemas ---
