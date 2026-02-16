@@ -72,6 +72,10 @@ const BuildSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    favorite: {
+        type: Boolean,
+        default: false,
+    },
 }, { timestamps: true });
 
 // Prevent overwrite on hot reload

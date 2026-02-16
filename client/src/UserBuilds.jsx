@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Clock, Trash2, X, Image as ImageIcon, Pencil, Check, Edit3 } from 'lucide-react';
+import { Clock, Trash2, X, Image as ImageIcon, Pencil, Check, Edit3, Heart } from 'lucide-react';
 
 const UserBuilds = () => {
     const [builds, setBuilds] = useState([]);
@@ -26,7 +26,13 @@ const UserBuilds = () => {
         try {
             const res = await axios.get(`http://localhost:3000/api/builds?userId=${user.id || user._id}`);
             if (res.data.success) {
-                setBuilds(res.data.data);
+                // Sort: favorites first, then by date (newest first)
+                const sorted = res.data.data.sort((a, b) => {
+                    if (a.favorite && !b.favorite) return -1;
+                    if (!a.favorite && b.favorite) return 1;
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+                setBuilds(sorted);
             }
         } catch (err) {
             console.error('Failed to fetch builds', err);
@@ -78,6 +84,24 @@ const UserBuilds = () => {
         navigate(`/builder/${build._id}`);
     };
 
+    // --- Toggle favorite ---
+    const toggleFavorite = async (id, currentFav) => {
+        try {
+            await axios.put(`http://localhost:3000/api/builds/${id}`, { favorite: !currentFav });
+            setBuilds(prev => {
+                const updated = prev.map(b => b._id === id ? { ...b, favorite: !currentFav } : b);
+                // Re-sort: favorites first, then by date
+                return updated.sort((a, b) => {
+                    if (a.favorite && !b.favorite) return -1;
+                    if (!a.favorite && b.favorite) return 1;
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+            });
+        } catch (err) {
+            console.error('Failed to toggle favorite', err);
+        }
+    };
+
     // Close modal on escape key
     useEffect(() => {
         const handleEsc = (e) => {
@@ -103,8 +127,15 @@ const UserBuilds = () => {
             ) : (
                 <div className="grid">
                     {builds.map(build => (
-                        <div key={build._id} className="build-card">
+                        <div key={build._id} className={`build-card ${build.favorite ? 'build-card-fav' : ''}`}>
                             <div className="build-card-top">
+                                <button
+                                    onClick={() => toggleFavorite(build._id, build.favorite)}
+                                    className={`btn-card-action btn-card-fav ${build.favorite ? 'is-fav' : ''}`}
+                                    title={build.favorite ? 'Remove from favorites' : 'Add to favorites'}
+                                >
+                                    <Heart size={18} fill={build.favorite ? 'currentColor' : 'none'} />
+                                </button>
                                 <div className="build-card-actions">
                                     <button
                                         onClick={() => setViewingBuild(build)}
