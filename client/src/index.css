@@ -1077,10 +1077,94 @@ select:focus {
 .build-title {
   font-size: 1.4rem;
   font-weight: 800;
-  margin: 0 0 0.25rem 0;
+  margin: 0;
   font-family: 'Fredoka', sans-serif;
   color: var(--text-main);
   line-height: 1.2;
+}
+
+/* Editable build name */
+.build-name-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  margin-bottom: 0.25rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.build-name-display:hover {
+  background: #f0f0f0;
+  padding-left: 0.5rem;
+}
+
+.build-name-edit-icon {
+  color: var(--text-muted);
+  opacity: 0;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.build-name-display:hover .build-name-edit-icon {
+  opacity: 1;
+}
+
+.build-name-edit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.build-name-input {
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: 'Fredoka', sans-serif;
+  color: var(--text-main);
+  border: 2px solid var(--brick-blue);
+  border-radius: 8px;
+  padding: 0.3rem 0.6rem;
+  outline: none;
+  flex: 1;
+  min-width: 0;
+  background: #F5F9FF;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.build-name-input:focus {
+  border-color: var(--brick-blue);
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.15);
+}
+
+.btn-name-save {
+  background: var(--brick-green);
+  color: white;
+  border: 2px solid #388E3C;
+  border-radius: 6px;
+  padding: 0.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-name-save:hover {
+  background: #388E3C;
+  transform: scale(1.1);
+}
+
+/* Edit build button */
+.btn-card-edit {
+  color: #F57C00;
+}
+
+.btn-card-edit:hover {
+  background: #FFF3E0;
+  border-color: #F57C00;
 }
 
 .build-price {
