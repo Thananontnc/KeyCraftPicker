@@ -53,7 +53,7 @@ export async function GET() {
                     case: 'MonsGeek M1 - Black',
                     pcb: 'M1 Hot-swap PCB',
                     switch: 'Akko V3 Cream Yellow (10 pcs)',
-                    keycap: 'NicePBT Sugarplum'
+                    keycap: 'Olivia Pink Base Kit' // Replaced NicePBT Sugarplum
                 }
             },
             {
@@ -64,7 +64,7 @@ export async function GET() {
                     case: 'Keychron Q1 Max',
                     pcb: 'Q1 RGB PCB',
                     switch: 'Gateron Ink Black V2 (10 pcs)',
-                    keycap: 'Cerakey Ceramic Keycaps - White'
+                    keycap: 'PBTfans WOB Classic' // Replaced Cerakey
                 }
             },
             {
@@ -74,8 +74,8 @@ export async function GET() {
                 parts: {
                     case: 'Tofu60 Redux Case - - Black',
                     pcb: 'DZ60 RGB V2 Hot-swap',
-                    switch: 'Holy Panda (10 pcs)',
-                    keycap: 'GMK Minimal'
+                    switch: 'Drop Holy Panda X (10 pcs)', // Updated name
+                    keycap: 'BOW Cherry Profile' // Replaced GMK Minimal
                 }
             }
         ];
