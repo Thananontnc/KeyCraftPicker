@@ -35,12 +35,14 @@ export async function POST(request) {
             const caseMount = caseObj.specs.get('mountingType');
             const pcbMount = pcbObj.specs.get('mountingType'); // Some PCBs support multiple, simplified here to single string comparison
             if (caseMount !== pcbMount && caseMount !== 'Universal') {
-                // Allow Gummy O-ring cases to use Tray mount PCBs (standard 60%)
-                const isOringCompatible = caseMount === 'Gummy O-ring' && pcbMount === 'Tray';
+                // Allow Gummy O-ring & Gasket mount cases (common in 60%) to use Tray mount PCBs
+                const isUniversal60 = (caseMount === 'Gummy O-ring' || caseMount === 'Gasket')
+                    && pcbMount === 'Tray'
+                    && pcbLayout === '60%'; // Only allow this exception for 60% form factor
 
                 // This is strict. Real world might be looser (e.g. Tray mount pcb fits many). 
                 // For this project, let's keep it simple: if defined, must match.
-                if (pcbMount && !isOringCompatible) {
+                if (pcbMount && !isUniversal60) {
                     issues.push(`Mounting Mismatch: Case is ${caseMount} but PCB expects ${pcbMount}`);
                 }
             }
