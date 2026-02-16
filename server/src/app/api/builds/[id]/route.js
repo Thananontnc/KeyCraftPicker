@@ -4,7 +4,7 @@ import { Build } from '@/models/Schemas';
 
 export async function GET(request, { params }) {
     await dbConnect();
-    const { id } = params;
+    const { id } = await params;
     try {
         const build = await Build.findById(id).populate('parts.case parts.pcb parts.switch parts.keycap');
         if (!build) return NextResponse.json({ success: false, error: 'Build not found' }, { status: 404 });
@@ -16,7 +16,7 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
     await dbConnect();
-    const { id } = params;
+    const { id } = await params;
     try {
         const data = await request.json();
         const build = await Build.findByIdAndUpdate(id, data, { new: true, runValidators: true });
@@ -29,7 +29,7 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
     await dbConnect();
-    const { id } = params;
+    const { id } = await params;
     try {
         const build = await Build.findByIdAndDelete(id);
         if (!build) return NextResponse.json({ success: false, error: 'Build not found' }, { status: 404 });
