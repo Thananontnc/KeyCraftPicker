@@ -830,3 +830,166 @@ select:focus {
   transform: translateY(-5px) scale(1.02);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
 }
+
+/* User Builds Page */
+.my-builds-page {
+  text-align: left;
+  margin-top: 2rem;
+}
+
+.empty-builds {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 4rem;
+  background: white;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hard);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.empty-builds p {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.build-card {
+  position: relative;
+  padding: 1.5rem;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: white;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hard);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.build-card:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 1);
+  border-color: var(--text-main);
+}
+
+.btn-delete-build {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  color: var(--brick-red);
+  background: white;
+  border: 2px solid transparent;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.btn-delete-build:hover {
+  background: #FFCDD2;
+  border-color: var(--brick-red);
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.build-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+  border-bottom: 3px dashed #eee;
+  padding-bottom: 1rem;
+  padding-right: 2.5rem;
+  /* Make space for delete button */
+}
+
+.build-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0;
+  font-family: 'Fredoka', sans-serif;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.build-price {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--brick-green);
+  font-family: 'Fredoka', sans-serif;
+  background: #E8F5E9;
+  padding: 0.25rem 0.75rem;
+  border: 2px solid #C8E6C9;
+  border-radius: 10px;
+  margin-top: 0.5rem;
+  display: inline-block;
+}
+
+.build-parts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.build-part-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  padding: 0.6rem 0.8rem;
+  background: #F8F9FA;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  transition: all 0.2s;
+}
+
+.build-part-item:hover {
+  border-color: var(--brick-blue);
+  background: white;
+  transform: translateX(2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.part-label {
+  font-weight: 800;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #E0E0E0;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.part-name {
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: right;
+  margin-left: 1rem;
+}
+
+.build-footer {
+  font-size: 0.8rem;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  font-weight: 700;
+  background: var(--brick-yellow);
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  width: fit-content;
+  border: 2px solid var(--border-color);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+}

@@ -42,50 +42,64 @@ const UserBuilds = () => {
         }
     };
 
-    if (loading) return <div className="page-container"><p>Loading builds...</p></div>;
+    if (loading) return <div className="page-container" style={{ textAlign: 'center', marginTop: '4rem' }}><div className="loader"></div><p style={{marginTop: '1rem', fontWeight: '700'}}>Loading your builds...</p></div>;
 
     return (
-        <div className="page-container" style={{ textAlign: 'left', marginTop: '2rem' }}>
+        <div className="page-container my-builds-page">
             <h1>My Saved Builds</h1>
 
             {builds.length === 0 ? (
-                <div className="card" style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
+                <div className="empty-builds">
                     <p>You haven't saved any builds yet.</p>
                 </div>
             ) : (
                 <div className="grid">
                     {builds.map(build => (
-                        <div key={build._id} className="card part-card" style={{ padding: '1.5rem', position: 'relative' }}>
+                        <div key={build._id} className="build-card">
                             <button
                                 onClick={() => handleDelete(build._id)}
-                                className="btn-sm"
-                                style={{
-                                    position: 'absolute',
-                                    top: '1rem',
-                                    right: '1rem',
-                                    color: 'var(--brick-red)',
-                                    borderColor: 'transparent',
-                                    background: 'transparent'
-                                }}
+                                className="btn-delete-build"
                                 title="Delete Build"
                             >
-                                <Trash2 size={18} />
+                                <Trash2 size={20} />
                             </button>
 
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', paddingRight: '2rem' }}>
-                                <h3 style={{ fontSize: '1.25rem', margin: 0 }}>{build.name}</h3>
-                                <span className="price">${build.totalPrice.toFixed(2)}</span>
+                            <div className="build-header">
+                                <h3 className="build-title">{build.name}</h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.25rem' }}>
+                                    <span className="build-price">${build.totalPrice.toFixed(2)}</span>
+                                </div>
                             </div>
 
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
-                                {build.parts.case && <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--text-secondary)' }}>Case:</span> <span>{build.parts.case.name}</span></div>}
-                                {build.parts.pcb && <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--text-secondary)' }}>PCB:</span> <span>{build.parts.pcb.name}</span></div>}
-                                {build.parts.switch && <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--text-secondary)' }}>Switch:</span> <span>{build.parts.switch.name}</span></div>}
-                                {build.parts.keycap && <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--text-secondary)' }}>Keycaps:</span> <span>{build.parts.keycap.name}</span></div>}
+                            <div className="build-parts-list">
+                                {build.parts.case && (
+                                    <div className="build-part-item">
+                                        <span className="part-label">Case</span>
+                                        <span className="part-name">{build.parts.case.name}</span>
+                                    </div>
+                                )}
+                                {build.parts.pcb && (
+                                    <div className="build-part-item">
+                                        <span className="part-label">PCB</span>
+                                        <span className="part-name">{build.parts.pcb.name}</span>
+                                    </div>
+                                )}
+                                {build.parts.switch && (
+                                    <div className="build-part-item">
+                                        <span className="part-label">Switch</span>
+                                        <span className="part-name">{build.parts.switch.name}</span>
+                                    </div>
+                                )}
+                                {build.parts.keycap && (
+                                    <div className="build-part-item">
+                                        <span className="part-label">Keycaps</span>
+                                        <span className="part-name">{build.parts.keycap.name}</span>
+                                    </div>
+                                )}
                             </div>
 
-                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <Clock size={14} /> {new Date(build.createdAt).toLocaleDateString()}
+                            <div className="build-footer">
+                                <Clock size={16} /> Created on {new Date(build.createdAt).toLocaleDateString()}
                             </div>
                         </div>
                     ))}
