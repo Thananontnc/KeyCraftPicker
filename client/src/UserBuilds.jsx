@@ -66,25 +66,26 @@ const UserBuilds = () => {
                 <div className="grid">
                     {builds.map(build => (
                         <div key={build._id} className="build-card">
-                            <button
-                                onClick={() => setViewingBuild(build)}
-                                className="btn-view-images"
-                                title="View Component Images"
-                            >
-                                <ImageIcon size={20} />
-                            </button>
-                            <button
-                                onClick={() => handleDelete(build._id)}
-                                className="btn-delete-build"
-                                title="Delete Build"
-                            >
-                                <Trash2 size={20} />
-                            </button>
-
                             <div className="build-header">
-                                <h3 className="build-title">{build.name}</h3>
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.25rem' }}>
+                                <div className="build-header-left">
+                                    <h3 className="build-title">{build.name}</h3>
                                     <span className="build-price">${build.totalPrice.toFixed(2)}</span>
+                                </div>
+                                <div className="build-header-actions">
+                                    <button
+                                        onClick={() => setViewingBuild(build)}
+                                        className="btn-card-action btn-card-view"
+                                        title="View Component Images"
+                                    >
+                                        <ImageIcon size={18} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(build._id)}
+                                        className="btn-card-action btn-card-delete"
+                                        title="Delete Build"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
                                 </div>
                             </div>
 
