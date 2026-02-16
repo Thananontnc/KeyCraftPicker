@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Clock, Trash2, X, Image as ImageIcon, Pencil, Check, Edit3, Heart } from 'lucide-react';
+import { Clock, Trash2, X, Image as ImageIcon, Pencil, Check, Edit3, Heart, Share2, Link as LinkIcon, Copy, CheckCircle } from 'lucide-react';
 
 const UserBuilds = () => {
     const [builds, setBuilds] = useState([]);
@@ -9,6 +9,8 @@ const UserBuilds = () => {
     const [viewingBuild, setViewingBuild] = useState(null);
     const [editingNameId, setEditingNameId] = useState(null);
     const [editNameValue, setEditNameValue] = useState('');
+    const [sharingBuild, setSharingBuild] = useState(null);
+    const [copied, setCopied] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -102,12 +104,42 @@ const UserBuilds = () => {
         }
     };
 
+    // --- Share build ---
+    const handleShare = (build) => {
+        setSharingBuild(build);
+        setCopied(false);
+    };
+
+    const getShareUrl = (buildId) => {
+        return `${window.location.origin}/shared/${buildId}`;
+    };
+
+    const copyShareLink = async () => {
+        if (!sharingBuild) return;
+        const url = getShareUrl(sharingBuild._id);
+        try {
+            await navigator.clipboard.writeText(url);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2500);
+        } catch {
+            const textArea = document.createElement('textarea');
+            textArea.value = url;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2500);
+        }
+    };
+
     // Close modal on escape key
     useEffect(() => {
         const handleEsc = (e) => {
             if (e.key === 'Escape') {
                 setViewingBuild(null);
                 setEditingNameId(null);
+                setSharingBuild(null);
             }
         };
         window.addEventListener('keydown', handleEsc);
@@ -150,6 +182,13 @@ const UserBuilds = () => {
                                         title="Edit Build Parts"
                                     >
                                         <Edit3 size={18} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleShare(build)}
+                                        className="btn-card-action btn-card-share"
+                                        title="Share Build"
+                                    >
+                                        <Share2 size={18} />
                                     </button>
                                     <button
                                         onClick={() => handleDelete(build._id)}
@@ -295,6 +334,49 @@ const UserBuilds = () => {
                                 </div>
                             )}
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Share Modal */}
+            {sharingBuild && (
+                <div className="modal-overlay" onClick={() => setSharingBuild(null)}>
+                    <div className="modal-content share-modal" onClick={e => e.stopPropagation()}>
+                        <button className="modal-close" onClick={() => setSharingBuild(null)}>
+                            <X size={24} />
+                        </button>
+
+                        <div className="share-modal-header">
+                            <Share2 size={28} className="share-modal-icon" />
+                            <h2>Share Build</h2>
+                            <p className="share-modal-subtitle">Share "{sharingBuild.name}" with others</p>
+                        </div>
+
+                        <div className="share-link-container">
+                            <LinkIcon size={16} className="share-link-icon" />
+                            <input
+                                type="text"
+                                value={getShareUrl(sharingBuild._id)}
+                                readOnly
+                                className="share-link-input"
+                                onClick={(e) => e.target.select()}
+                            />
+                            <button
+                                onClick={copyShareLink}
+                                className={`share-copy-btn ${copied ? 'copied' : ''}`}
+                            >
+                                {copied ? <><CheckCircle size={16} /> Copied!</> : <><Copy size={16} /> Copy</>}
+                            </button>
+                        </div>
+
+                        <a
+                            href={getShareUrl(sharingBuild._id)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="share-preview-link"
+                        >
+                            Open shared page in new tab →
+                        </a>
                     </div>
                 </div>
             )}
