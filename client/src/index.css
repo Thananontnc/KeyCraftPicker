@@ -948,30 +948,7 @@ select:focus {
   line-height: 1.3;
 }
 
-.btn-view-images {
-  position: absolute;
-  top: 0.75rem;
-  right: 3.5rem;
-  /* Next to delete button */
-  color: var(--brick-blue);
-  background: white;
-  border: 2px solid transparent;
-  padding: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-}
 
-.btn-view-images:hover {
-  background: #E3F2FD;
-  border-color: var(--brick-blue);
-  transform: scale(1.1);
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
-}
 
 @keyframes fadeIn {
   from {
@@ -1059,8 +1036,8 @@ select:focus {
   margin-bottom: 1.25rem;
   border-bottom: 3px dashed #eee;
   padding-bottom: 1rem;
-  padding-right: 2.5rem;
-  /* Make space for delete button */
+  padding-right: 7.5rem;
+  /* Make space for delete button and view images button */
 }
 
 .build-title {
