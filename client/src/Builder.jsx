@@ -125,12 +125,15 @@ const Builder = () => {
         if (activeSlot === 'pcb' && build.case) {
             // Layout mismatch
             if (!build.case.specs.supportedLayouts.includes(part.specs.layout)) return false;
-            // Mounting mismatch (Strict for now)
-            if (build.case.specs.mountingType !== part.specs.mountingType) return false;
+            // Mounting mismatch (Allow Gummy O-ring cases to take Standard Tray PCBs)
+            const isOringCompatible = build.case.specs.mountingType === 'Gummy O-ring' && part.specs.mountingType === 'Tray';
+            if (build.case.specs.mountingType !== part.specs.mountingType && !isOringCompatible) return false;
         }
         if (activeSlot === 'case' && build.pcb) {
             if (!part.specs.supportedLayouts.includes(build.pcb.specs.layout)) return false;
-            if (part.specs.mountingType !== build.pcb.specs.mountingType) return false;
+
+            const isOringCompatible = part.specs.mountingType === 'Gummy O-ring' && build.pcb.specs.mountingType === 'Tray';
+            if (part.specs.mountingType !== build.pcb.specs.mountingType && !isOringCompatible) return false;
         }
 
         // 2. PCB <-> Switch Compatibility
