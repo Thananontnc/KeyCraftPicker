@@ -126,6 +126,13 @@ const Builder = () => {
             alert('Please login to save your build');
             return;
         }
+
+        // validation: ensure at least one part is selected
+        if (!build.case && !build.pcb && !build.switch && !build.keycap) {
+            alert('Please select at least one part to save your build.');
+            return;
+        }
+
         const user = JSON.parse(userStr);
 
         try {

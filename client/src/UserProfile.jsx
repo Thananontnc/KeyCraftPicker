@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { User, Camera, Save, Package, Cpu, Zap, Award, TrendingUp, DollarSign, Shield, Sparkles } from 'lucide-react';
+import { User, Camera, Save, Package, Cpu, Zap, Award, TrendingUp, DollarSign, Shield, Sparkles, Heart } from 'lucide-react';
 
 const UserProfile = () => {
+    const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [bio, setBio] = useState('');
     const [avatar, setAvatar] = useState('');
@@ -41,7 +43,17 @@ const UserProfile = () => {
         try {
             const res = await axios.get(`http://localhost:3000/api/builds?userId=${userId}`);
             if (res.data.success) {
-                setBuilds(res.data.data);
+                // Sort: favorites first, then by date (newest first)
+                const sorted = (res.data.data || []).sort((a, b) => {
+                    const favA = a.favorite === true;
+                    const favB = b.favorite === true;
+                    if (favA && !favB) return -1;
+                    if (!favA && favB) return 1;
+                    const dateA = new Date(a.createdAt || 0);
+                    const dateB = new Date(b.createdAt || 0);
+                    return dateB - dateA;
+                });
+                setBuilds(sorted);
             }
         } catch (err) {
             console.error('Failed to fetch builds', err);
@@ -258,25 +270,33 @@ const UserProfile = () => {
                 ) : (
                     <div className="profile-build-grid">
                         {builds.map(build => (
-                            <div key={build._id} className="profile-build-card">
+                            <div
+                                key={build._id}
+                                className="profile-build-card"
+                                onClick={() => navigate(`/builder/${build._id}`)}
+                                style={{ cursor: 'pointer' }}
+                            >
                                 <div className="profile-build-header">
-                                    <span className="profile-build-name">{build.name}</span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <span className="profile-build-name">{build.name}</span>
+                                        {build.favorite && <Heart size={16} fill="var(--brick-red)" color="var(--brick-red)" />}
+                                    </div>
                                     <span className="profile-build-price">${build.totalPrice.toFixed(0)}</span>
                                 </div>
                                 <div className="profile-build-parts">
-                                    {build.parts.case && (
+                                    {build.parts?.case && (
                                         <div className="profile-build-part">
                                             <span className="profile-part-emoji">📦</span>
                                             <span className="profile-part-name">{build.parts.case.name}</span>
                                         </div>
                                     )}
-                                    {build.parts.switch && (
+                                    {build.parts?.switch && (
                                         <div className="profile-build-part">
                                             <span className="profile-part-emoji">🏗️</span>
                                             <span className="profile-part-name">{build.parts.switch.name}</span>
                                         </div>
                                     )}
-                                    {build.parts.keycap && (
+                                    {build.parts?.keycap && (
                                         <div className="profile-build-part">
                                             <span className="profile-part-emoji">🎨</span>
                                             <span className="profile-part-name">{build.parts.keycap.name}</span>
