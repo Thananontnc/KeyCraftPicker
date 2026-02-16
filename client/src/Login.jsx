@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from './utils/api';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogIn } from 'lucide-react';
 
@@ -12,17 +12,17 @@ const Login = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    // ... imports
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // In development, we need to point to the server port 3000 (Next.js) from client port 5173 (Vite)
-            // Since we haven't set up a proxy yet, we'll use full URL or configure proxy in vite.config.js
-            // Let's assume proxy or CORS is handled. For now, hardcode localhost:3000
-            const res = await axios.post('http://localhost:3000/api/auth/login', formData);
+            const res = await api.post('/auth/login', formData);
 
             if (res.data.success) {
-                // Store user in local storage for simple persistence
+                // Store user and token
                 localStorage.setItem('user', JSON.stringify(res.data.data));
+                localStorage.setItem('token', res.data.token);
                 window.dispatchEvent(new Event('auth-change'));
                 navigate('/builder'); // Redirect to builder after login
             }

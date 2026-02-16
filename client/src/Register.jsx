@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from './utils/api'; // Use custom api client
 import { useNavigate, Link } from 'react-router-dom';
 import { UserPlus } from 'lucide-react';
 
@@ -12,14 +12,17 @@ const Register = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    // ... imports
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:3000/api/auth/register', formData);
+            const res = await api.post('/auth/register', formData);
 
             if (res.data.success) {
                 // Auto login after register
                 localStorage.setItem('user', JSON.stringify(res.data.data));
+                localStorage.setItem('token', res.data.token); // Store token directly
                 window.dispatchEvent(new Event('auth-change'));
                 navigate('/builder');
             }

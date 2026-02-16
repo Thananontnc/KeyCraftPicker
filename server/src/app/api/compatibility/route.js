@@ -5,7 +5,7 @@ import { Part } from '@/models/Schemas';
 export async function POST(request) {
     await dbConnect();
     try {
-        const { parts } = await request.json(); // Expect simplified object: { case: 'id', pcb: 'id', ... } or array of specific parts
+        const { parts } = await request.json();
         const { case: caseId, pcb: pcbId, switch: switchId, keycap: keycapId } = parts;
 
         // Fetch full objects to check specs
@@ -33,7 +33,7 @@ export async function POST(request) {
 
             // Check mounting type
             const caseMount = caseObj.specs.get('mountingType');
-            const pcbMount = pcbObj.specs.get('mountingType'); // Some PCBs support multiple, simplified here to single string comparison
+            const pcbMount = pcbObj.specs.get('mountingType');
             if (caseMount !== pcbMount && caseMount !== 'Universal') {
                 // Allow Gummy O-ring & Gasket mount cases (common in 60%) to use Tray mount PCBs
                 const isUniversal60 = (caseMount === 'Gummy O-ring' || caseMount === 'Gasket')
@@ -48,8 +48,8 @@ export async function POST(request) {
 
         // 2. PCB & Switch
         if (pcbObj && switchObj) {
-            const socketType = pcbObj.specs.get('socketType') || 'Mechanical'; // Default to Mechanical if missing
-            const switchTech = switchObj.specs.get('technology') || 'Mechanical'; // Default to Mechanical
+            const socketType = pcbObj.specs.get('socketType') || 'Mechanical';
+            const switchTech = switchObj.specs.get('technology') || 'Mechanical';
 
             const switchPin = switchObj.specs.get('pinType'); // '3-pin', '5-pin'
             const pcbSupport = pcbObj.specs.get('switchSupport'); // '3-pin', '5-pin', 'Both'

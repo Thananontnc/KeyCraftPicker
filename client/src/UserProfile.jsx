@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from './utils/api'; // Use custom api client
 import { User, Camera, Save, Package, Cpu, Zap, Award, TrendingUp, DollarSign, Shield, Sparkles, Heart } from 'lucide-react';
 
 const UserProfile = () => {
@@ -36,7 +36,8 @@ const UserProfile = () => {
 
     const fetchProfile = async (userId) => {
         try {
-            const res = await axios.get(`http://localhost:3000/api/user/profile?userId=${userId}`);
+            // API client automatically attaches token
+            const res = await api.get(`/user/profile?userId=${userId}`);
             if (res.data.success) {
                 setUser(res.data.user);
                 setBio(res.data.user.bio || '');
@@ -52,7 +53,8 @@ const UserProfile = () => {
     const fetchBuilds = async (userId) => {
         if (!userId) return;
         try {
-            const res = await axios.get(`http://localhost:3000/api/builds?userId=${userId}`);
+            const res = await api.get(`/builds?userId=${userId}`);
+            // ... (rest is same)
             if (res.data.success) {
                 // Sort: favorites first, then by date (newest first)
                 const sorted = (res.data.data || []).sort((a, b) => {
@@ -80,7 +82,7 @@ const UserProfile = () => {
 
         setUploading(true);
         try {
-            const res = await axios.post('http://localhost:3000/api/upload', formData, {
+            const res = await api.post('/upload', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             if (res.data.success) {
@@ -98,7 +100,7 @@ const UserProfile = () => {
         if (!user) return;
 
         try {
-            const res = await axios.put('http://localhost:3000/api/user/profile', {
+            const res = await api.put('/user/profile', {
                 userId: user._id,
                 bio,
                 avatar
@@ -126,7 +128,7 @@ const UserProfile = () => {
     // --- Stats Calculation ---
     const totalValue = builds.reduce((acc, b) => acc + b.totalPrice, 0);
     const totalBuilds = builds.length;
-    const uniqueSwitches = new Set(builds.map(b => b.parts.switch?.name).filter(Boolean)).size;
+    const uniqueSwitches = new Set(builds.map(b => b.parts?.switch?.name).filter(Boolean)).size;
 
     // --- Badge Logic ---
     const badges = [];
@@ -281,7 +283,6 @@ const UserProfile = () => {
                 ) : (
                     <div className="profile-build-grid">
                         {builds.map(build => {
-                            console.log('Rendering build:', build);
                             return (
                                 <div
                                     key={build._id}
@@ -322,7 +323,6 @@ const UserProfile = () => {
                     </div>
                 )}
             </div>
-
         </div>
     );
 };

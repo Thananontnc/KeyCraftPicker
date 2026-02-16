@@ -43,7 +43,7 @@ export async function GET() {
     try {
         await dbConnect();
 
-        // Define our presets by exact Part Name to ensure we get the right items
+        // Define our presets by exact Part Name to ensure we get the right items ตรงนี้เอาใว้ใช้ Suggestion 
         const presetsConfig = [
             {
                 id: 'creamy-dream',
@@ -108,9 +108,6 @@ export async function GET() {
                 const partDoc = partsMap[name.toLowerCase()];
                 if (partDoc) {
                     currentPartsMap[type] = partDoc;
-
-                    // For switches, calculate price for 70-90 switches approx?
-                    // The user logic just sums unit prices currently, let's stick to that for consistency
                     totalPrice += partDoc.price;
                 } else {
                     missing = true;

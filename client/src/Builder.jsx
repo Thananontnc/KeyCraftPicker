@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from './utils/api';
 import { Save, AlertTriangle, CheckCircle, X } from 'lucide-react';
 
 const Builder = () => {
@@ -39,7 +39,7 @@ const Builder = () => {
 
     const loadExistingBuild = async (id) => {
         try {
-            const res = await axios.get(`http://localhost:3000/api/builds/${id}`);
+            const res = await api.get(`/builds/${id}`);
             if (res.data.success) {
                 const existingBuild = res.data.data;
                 setBuildName(existingBuild.name);
@@ -61,7 +61,7 @@ const Builder = () => {
 
     const fetchPresets = async () => {
         try {
-            const res = await axios.get('http://localhost:3000/api/recommendations/presets');
+            const res = await api.get('/recommendations/presets');
             if (res.data.success) {
                 setPresets(res.data.presets);
             }
@@ -86,7 +86,7 @@ const Builder = () => {
         }
 
         try {
-            const res = await axios.post('http://localhost:3000/api/compatibility', { parts: payload });
+            const res = await api.post('/compatibility', { parts: payload });
             if (res.data.success) {
                 setCompatibility({
                     compatible: res.data.compatible,
@@ -102,7 +102,7 @@ const Builder = () => {
     const fetchPartsForSlot = async (type) => {
         setActiveSlot(type);
         try {
-            const res = await axios.get(`http://localhost:3000/api/parts?type=${type}`);
+            const res = await api.get(`/parts?type=${type}`);
             if (res.data.success) {
                 setParts(res.data.data);
             }
@@ -133,7 +133,10 @@ const Builder = () => {
             return;
         }
 
-        const user = JSON.parse(userStr);
+        // Note: We don't need to parse user here to get ID, the token handles auth.
+        // But the backend expects 'userId' in the body?
+        // Our backend update now FORCES userId from token in POST.
+        // So we can send it or not, backend ignores/overwrites it securely.
 
         try {
             if (!compatibility.compatible) {
@@ -153,7 +156,7 @@ const Builder = () => {
             if (isEditMode && buildId) {
                 // Update existing build
                 buildData.name = buildName;
-                await axios.put(`http://localhost:3000/api/builds/${buildId}`, buildData);
+                await api.put(`/builds/${buildId}`, buildData);
                 alert('Build updated successfully!');
                 navigate('/builds');
             } else {
@@ -162,9 +165,10 @@ const Builder = () => {
                     alert('Please enter a name for your build');
                     return;
                 }
-                buildData.userId = user.id || user._id;
                 buildData.name = buildName;
-                await axios.post('http://localhost:3000/api/builds', buildData);
+                // buildData.userId = ... (Handled by backend via token)
+
+                await api.post('/builds', buildData);
                 alert('Build saved successfully!');
             }
         } catch (err) {
@@ -178,7 +182,7 @@ const Builder = () => {
         if (!part || !part.specs) return true;
 
         // 1. Case <-> PCB Compatibility
-        // 1. Case <-> PCB Compatibility
+        // 1. Case <-> PCB Compatibilityเข้าใจมั้ยเพื่อนตง
         if (activeSlot === 'pcb' && build.case) {
             // Layout mismatch
             if (!build.case.specs.supportedLayouts.includes(part.specs.layout)) return false;
@@ -202,7 +206,7 @@ const Builder = () => {
         // 2. PCB <-> Switch Compatibility
         if (activeSlot === 'switch' && build.pcb) {
             // Optical vs Mechanical (socketType not strictly defined in seed yet, assuming standard mechanical for now)
-            // If PCB is 3-pin (hotSwap: false or specific spec), and Switch is 5-pin?
+            // If PCB is 3-pin (hotSwap: false or specific spec), and Switch is 5-pin? เข้าใจมั้ยเพื่อน
             // Simplified: If PCB says "switchSupport: '3-pin'" and switch is 5-pin -> Incompatible
             if (build.pcb.specs.switchSupport === '3-pin' && part.specs.pinType === '5-pin') return false;
         }

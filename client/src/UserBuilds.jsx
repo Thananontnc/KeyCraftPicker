@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from './utils/api';
 import { Clock, Trash2, X, Image as ImageIcon, Pencil, Check, Edit3, Heart, Share2, Link as LinkIcon, Copy, CheckCircle } from 'lucide-react';
 
 const UserBuilds = () => {
@@ -26,7 +26,7 @@ const UserBuilds = () => {
         const user = JSON.parse(userStr);
 
         try {
-            const res = await axios.get(`http://localhost:3000/api/builds?userId=${user.id || user._id}`);
+            const res = await api.get(`/builds?userId=${user.id || user._id}`);
             if (res.data.success) {
                 // Sort: favorites first, then by date (newest first)
                 const sorted = res.data.data.sort((a, b) => {
@@ -46,7 +46,7 @@ const UserBuilds = () => {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this build?')) return;
         try {
-            await axios.delete(`http://localhost:3000/api/builds/${id}`);
+            await api.delete(`/builds/${id}`);
             setBuilds(builds.filter(build => build._id !== id));
         } catch (err) {
             console.error('Failed to delete build', err);
@@ -64,7 +64,7 @@ const UserBuilds = () => {
         const trimmed = editNameValue.trim();
         if (!trimmed) return;
         try {
-            await axios.put(`http://localhost:3000/api/builds/${id}`, { name: trimmed });
+            await api.put(`/builds/${id}`, { name: trimmed });
             setBuilds(builds.map(b => b._id === id ? { ...b, name: trimmed } : b));
             setEditingNameId(null);
         } catch (err) {
@@ -73,23 +73,12 @@ const UserBuilds = () => {
         }
     };
 
-    const handleNameKeyDown = (e, id) => {
-        if (e.key === 'Enter') {
-            saveEditedName(id);
-        } else if (e.key === 'Escape') {
-            setEditingNameId(null);
-        }
-    };
-
-    // --- Edit build (navigate to builder) ---
-    const handleEditBuild = (build) => {
-        navigate(`/builder/${build._id}`);
-    };
+    // ... (skip handleNameKeyDown, handleEditBuild)
 
     // --- Toggle favorite ---
     const toggleFavorite = async (id, currentFav) => {
         try {
-            await axios.put(`http://localhost:3000/api/builds/${id}`, { favorite: !currentFav });
+            await api.put(`/builds/${id}`, { favorite: !currentFav });
             setBuilds(prev => {
                 const updated = prev.map(b => b._id === id ? { ...b, favorite: !currentFav } : b);
                 // Re-sort: favorites first, then by date
