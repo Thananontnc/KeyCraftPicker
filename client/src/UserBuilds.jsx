@@ -231,25 +231,25 @@ const UserBuilds = () => {
                             <div className="build-divider"></div>
 
                             <div className="build-parts-list">
-                                {build.parts.case && (
+                                {build.parts?.case && (
                                     <div className="build-part-item">
                                         <span className="part-label">Case</span>
                                         <span className="part-name">{build.parts.case.name}</span>
                                     </div>
                                 )}
-                                {build.parts.pcb && (
+                                {build.parts?.pcb && (
                                     <div className="build-part-item">
                                         <span className="part-label">PCB</span>
                                         <span className="part-name">{build.parts.pcb.name}</span>
                                     </div>
                                 )}
-                                {build.parts.switch && (
+                                {build.parts?.switch && (
                                     <div className="build-part-item">
                                         <span className="part-label">Switch</span>
                                         <span className="part-name">{build.parts.switch.name}</span>
                                     </div>
                                 )}
-                                {build.parts.keycap && (
+                                {build.parts?.keycap && (
                                     <div className="build-part-item">
                                         <span className="part-label">Keycaps</span>
                                         <span className="part-name">{build.parts.keycap.name}</span>
@@ -277,7 +277,7 @@ const UserBuilds = () => {
                         <p style={{ color: 'var(--text-muted)' }}>Component Gallery</p>
 
                         <div className="gallery-grid">
-                            {viewingBuild.parts.case && (
+                            {viewingBuild.parts?.case && (
                                 <div className="gallery-item">
                                     <div className="gallery-label">Case</div>
                                     <div className="gallery-image-container">
@@ -291,7 +291,7 @@ const UserBuilds = () => {
                                     <div className="gallery-title">{viewingBuild.parts.case.name}</div>
                                 </div>
                             )}
-                            {viewingBuild.parts.pcb && (
+                            {viewingBuild.parts?.pcb && (
                                 <div className="gallery-item">
                                     <div className="gallery-label">PCB</div>
                                     <div className="gallery-image-container">
@@ -305,7 +305,7 @@ const UserBuilds = () => {
                                     <div className="gallery-title">{viewingBuild.parts.pcb.name}</div>
                                 </div>
                             )}
-                            {viewingBuild.parts.switch && (
+                            {viewingBuild.parts?.switch && (
                                 <div className="gallery-item">
                                     <div className="gallery-label">Switch</div>
                                     <div className="gallery-image-container">
@@ -319,7 +319,7 @@ const UserBuilds = () => {
                                     <div className="gallery-title">{viewingBuild.parts.switch.name}</div>
                                 </div>
                             )}
-                            {viewingBuild.parts.keycap && (
+                            {viewingBuild.parts?.keycap && (
                                 <div className="gallery-item">
                                     <div className="gallery-label">Keycaps</div>
                                     <div className="gallery-image-container">

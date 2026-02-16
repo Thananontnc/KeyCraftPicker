@@ -16,11 +16,21 @@ const UserProfile = () => {
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
-            const parsedUser = JSON.parse(storedUser);
-            fetchProfile(parsedUser.id || parsedUser._id);
-            fetchBuilds(parsedUser.id || parsedUser._id);
+            try {
+                const parsedUser = JSON.parse(storedUser);
+                const userId = parsedUser.id || parsedUser._id;
+
+                if (userId) {
+                    fetchProfile(userId);
+                    fetchBuilds(userId);
+                } else {
+                    navigate('/login');
+                }
+            } catch (e) {
+                navigate('/login');
+            }
         } else {
-            setLoading(false);
+            navigate('/login');
         }
     }, []);
 
@@ -40,6 +50,7 @@ const UserProfile = () => {
     };
 
     const fetchBuilds = async (userId) => {
+        if (!userId) return;
         try {
             const res = await axios.get(`http://localhost:3000/api/builds?userId=${userId}`);
             if (res.data.success) {
@@ -269,42 +280,45 @@ const UserProfile = () => {
                     </div>
                 ) : (
                     <div className="profile-build-grid">
-                        {builds.map(build => (
-                            <div
-                                key={build._id}
-                                className="profile-build-card"
-                                onClick={() => navigate(`/builder/${build._id}`)}
-                                style={{ cursor: 'pointer' }}
-                            >
-                                <div className="profile-build-header">
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        <span className="profile-build-name">{build.name}</span>
-                                        {build.favorite && <Heart size={16} fill="var(--brick-red)" color="var(--brick-red)" />}
+                        {builds.map(build => {
+                            console.log('Rendering build:', build);
+                            return (
+                                <div
+                                    key={build._id}
+                                    className="profile-build-card"
+                                    onClick={() => navigate(`/builder/${build._id}`)}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    <div className="profile-build-header">
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                            <span className="profile-build-name">{build.name || 'Untitled Build'}</span>
+                                            {build.favorite && <Heart size={16} fill="var(--brick-red)" color="var(--brick-red)" />}
+                                        </div>
+                                        <span className="profile-build-price">${(build.totalPrice || 0).toFixed(0)}</span>
                                     </div>
-                                    <span className="profile-build-price">${build.totalPrice.toFixed(0)}</span>
+                                    <div className="profile-build-parts">
+                                        {build.parts?.case && (
+                                            <div className="profile-build-part">
+                                                <span className="profile-part-emoji">📦</span>
+                                                <span className="profile-part-name">{build.parts.case.name}</span>
+                                            </div>
+                                        )}
+                                        {build.parts?.switch && (
+                                            <div className="profile-build-part">
+                                                <span className="profile-part-emoji">🏗️</span>
+                                                <span className="profile-part-name">{build.parts.switch.name}</span>
+                                            </div>
+                                        )}
+                                        {build.parts?.keycap && (
+                                            <div className="profile-build-part">
+                                                <span className="profile-part-emoji">🎨</span>
+                                                <span className="profile-part-name">{build.parts.keycap.name}</span>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className="profile-build-parts">
-                                    {build.parts?.case && (
-                                        <div className="profile-build-part">
-                                            <span className="profile-part-emoji">📦</span>
-                                            <span className="profile-part-name">{build.parts.case.name}</span>
-                                        </div>
-                                    )}
-                                    {build.parts?.switch && (
-                                        <div className="profile-build-part">
-                                            <span className="profile-part-emoji">🏗️</span>
-                                            <span className="profile-part-name">{build.parts.switch.name}</span>
-                                        </div>
-                                    )}
-                                    {build.parts?.keycap && (
-                                        <div className="profile-build-part">
-                                            <span className="profile-part-emoji">🎨</span>
-                                            <span className="profile-part-name">{build.parts.keycap.name}</span>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </div>

@@ -24,6 +24,7 @@ const Register = () => {
                 navigate('/builder');
             }
         } catch (err) {
+            console.error('Registration error details:', err);
             setError(err.response?.data?.error || 'Registration failed');
         }
     };

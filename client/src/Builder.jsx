@@ -7,7 +7,7 @@ const Builder = () => {
     const { buildId } = useParams();
     const navigate = useNavigate();
     const [isEditMode, setIsEditMode] = useState(false);
-    const [editBuildName, setEditBuildName] = useState('');
+    const [buildName, setBuildName] = useState('');
     // State for selected parts
     const [build, setBuild] = useState({
         case: null,
@@ -42,7 +42,7 @@ const Builder = () => {
             const res = await axios.get(`http://localhost:3000/api/builds/${id}`);
             if (res.data.success) {
                 const existingBuild = res.data.data;
-                setEditBuildName(existingBuild.name);
+                setBuildName(existingBuild.name);
                 setIsEditMode(true);
                 // Set the populated part objects directly into build state
                 setBuild({
@@ -152,14 +152,18 @@ const Builder = () => {
 
             if (isEditMode && buildId) {
                 // Update existing build
-                buildData.name = editBuildName;
+                buildData.name = buildName;
                 await axios.put(`http://localhost:3000/api/builds/${buildId}`, buildData);
                 alert('Build updated successfully!');
                 navigate('/builds');
             } else {
                 // Create new build
+                if (!buildName.trim()) {
+                    alert('Please enter a name for your build');
+                    return;
+                }
                 buildData.userId = user.id || user._id;
-                buildData.name = `My Custom Build - ${new Date().toLocaleDateString()}`;
+                buildData.name = buildName;
                 await axios.post('http://localhost:3000/api/builds', buildData);
                 alert('Build saved successfully!');
             }
@@ -280,24 +284,21 @@ const Builder = () => {
                         textTransform: 'uppercase', letterSpacing: '-1px',
                         textShadow: '3px 3px 0px rgba(0,0,0,0.1)'
                     }}>{isEditMode ? 'Edit Build' : 'Keyboard Builder'}</h1>
-                    {isEditMode ? (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <span style={{ fontSize: '1.2rem', fontWeight: '600', color: '#555' }}>Build Name:</span>
-                            <input
-                                type="text"
-                                value={editBuildName}
-                                onChange={(e) => setEditBuildName(e.target.value)}
-                                className="build-name-input"
-                                style={{
-                                    fontSize: '1.2rem', fontWeight: '700', padding: '0.4rem 0.8rem',
-                                    border: '3px solid var(--brick-black)', borderRadius: '8px',
-                                    fontFamily: 'Fredoka, sans-serif', width: '300px'
-                                }}
-                            />
-                        </div>
-                    ) : (
-                        <p style={{ fontSize: '1.2rem', fontWeight: '600', color: '#555' }}>Drag, drop, and click to build your dream board.</p>
-                    )}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{ fontSize: '1.2rem', fontWeight: '600', color: '#555' }}>Build Name:</span>
+                        <input
+                            type="text"
+                            value={buildName}
+                            onChange={(e) => setBuildName(e.target.value)}
+                            placeholder="Name your build..."
+                            className="build-name-input"
+                            style={{
+                                fontSize: '1.2rem', fontWeight: '700', padding: '0.4rem 0.8rem',
+                                border: '3px solid var(--brick-black)', borderRadius: '8px',
+                                fontFamily: 'Fredoka, sans-serif', width: '300px'
+                            }}
+                        />
+                    </div>
                 </div>
                 <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
                     <div style={{
