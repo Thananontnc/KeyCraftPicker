@@ -10,6 +10,7 @@ import AdminDashboard from './AdminDashboard';
 import Builder from './Builder';
 import Home from './Home';
 import UserProfile from './UserProfile';
+import SharedBuild from './SharedBuild';
 
 // Navbar Component to use hooks inside Router
 const Navbar = () => {
@@ -89,6 +90,7 @@ function App() {
                         <Route path="/builder" element={<Builder />} />
                         <Route path="/builder/:buildId" element={<Builder />} />
                         <Route path="/builds" element={<UserBuilds />} />
+                        <Route path="/shared/:buildId" element={<SharedBuild />} />
                         <Route path="/profile" element={<UserProfile />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                     </Routes>
