@@ -66,12 +66,8 @@ const UserBuilds = () => {
                 <div className="grid">
                     {builds.map(build => (
                         <div key={build._id} className="build-card">
-                            <div className="build-header">
-                                <div className="build-header-left">
-                                    <h3 className="build-title">{build.name}</h3>
-                                    <span className="build-price">${build.totalPrice.toFixed(2)}</span>
-                                </div>
-                                <div className="build-header-actions">
+                            <div className="build-card-top">
+                                <div className="build-card-actions">
                                     <button
                                         onClick={() => setViewingBuild(build)}
                                         className="btn-card-action btn-card-view"
@@ -88,6 +84,9 @@ const UserBuilds = () => {
                                     </button>
                                 </div>
                             </div>
+                            <h3 className="build-title">{build.name}</h3>
+                            <span className="build-price">${build.totalPrice.toFixed(2)}</span>
+                            <div className="build-divider"></div>
 
                             <div className="build-parts-list">
                                 {build.parts.case && (
