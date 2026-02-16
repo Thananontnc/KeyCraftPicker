@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Save, AlertTriangle, CheckCircle, X } from 'lucide-react';
 
 const Builder = () => {
+    const { buildId } = useParams();
+    const navigate = useNavigate();
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [editBuildName, setEditBuildName] = useState('');
     // State for selected parts
     const [build, setBuild] = useState({
         case: null,
@@ -24,6 +29,35 @@ const Builder = () => {
     useEffect(() => {
         fetchPresets();
     }, []);
+
+    // Load existing build for editing
+    useEffect(() => {
+        if (buildId) {
+            loadExistingBuild(buildId);
+        }
+    }, [buildId]);
+
+    const loadExistingBuild = async (id) => {
+        try {
+            const res = await axios.get(`http://localhost:3000/api/builds/${id}`);
+            if (res.data.success) {
+                const existingBuild = res.data.data;
+                setEditBuildName(existingBuild.name);
+                setIsEditMode(true);
+                // Set the populated part objects directly into build state
+                setBuild({
+                    case: existingBuild.parts.case || null,
+                    pcb: existingBuild.parts.pcb || null,
+                    switch: existingBuild.parts.switch || null,
+                    keycap: existingBuild.parts.keycap || null
+                });
+            }
+        } catch (err) {
+            console.error('Failed to load build for editing', err);
+            alert('Failed to load build. Redirecting to builder.');
+            navigate('/builder');
+        }
+    };
 
     const fetchPresets = async () => {
         try {
@@ -99,9 +133,7 @@ const Builder = () => {
                 if (!confirm('Your build has compatibility issues. Save anyway?')) return;
             }
 
-            await axios.post('http://localhost:3000/api/builds', {
-                userId: user.id || user._id, // Handle different id formats
-                name: `My Custom Build - ${new Date().toLocaleDateString()}`,
+            const buildData = {
                 parts: {
                     case: build.case?._id,
                     pcb: build.pcb?._id,
@@ -109,8 +141,21 @@ const Builder = () => {
                     keycap: build.keycap?._id,
                 },
                 totalPrice: Number(calculateTotal())
-            });
-            alert('Build saved successfully!');
+            };
+
+            if (isEditMode && buildId) {
+                // Update existing build
+                buildData.name = editBuildName;
+                await axios.put(`http://localhost:3000/api/builds/${buildId}`, buildData);
+                alert('Build updated successfully!');
+                navigate('/builds');
+            } else {
+                // Create new build
+                buildData.userId = user.id || user._id;
+                buildData.name = `My Custom Build - ${new Date().toLocaleDateString()}`;
+                await axios.post('http://localhost:3000/api/builds', buildData);
+                alert('Build saved successfully!');
+            }
         } catch (err) {
             alert('Failed to save build: ' + (err.response?.data?.error || err.message));
         }
@@ -227,8 +272,25 @@ const Builder = () => {
                         fontSize: '3rem', fontWeight: '900', color: 'var(--brick-red)',
                         textTransform: 'uppercase', letterSpacing: '-1px',
                         textShadow: '3px 3px 0px rgba(0,0,0,0.1)'
-                    }}>Keyboard Builder</h1>
-                    <p style={{ fontSize: '1.2rem', fontWeight: '600', color: '#555' }}>Drag, drop, and click to build your dream board.</p>
+                    }}>{isEditMode ? 'Edit Build' : 'Keyboard Builder'}</h1>
+                    {isEditMode ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span style={{ fontSize: '1.2rem', fontWeight: '600', color: '#555' }}>Build Name:</span>
+                            <input
+                                type="text"
+                                value={editBuildName}
+                                onChange={(e) => setEditBuildName(e.target.value)}
+                                className="build-name-input"
+                                style={{
+                                    fontSize: '1.2rem', fontWeight: '700', padding: '0.4rem 0.8rem',
+                                    border: '3px solid var(--brick-black)', borderRadius: '8px',
+                                    fontFamily: 'Fredoka, sans-serif', width: '300px'
+                                }}
+                            />
+                        </div>
+                    ) : (
+                        <p style={{ fontSize: '1.2rem', fontWeight: '600', color: '#555' }}>Drag, drop, and click to build your dream board.</p>
+                    )}
                 </div>
                 <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
                     <div style={{
@@ -246,7 +308,7 @@ const Builder = () => {
                         boxShadow: '4px 4px 0px rgba(0,0,0,0.2)',
                         transform: 'rotate(-1deg)'
                     }}>
-                        <Save size={20} /> Save Build
+                        <Save size={20} /> {isEditMode ? 'Update Build' : 'Save Build'}
                     </button>
                 </div>
             </div>

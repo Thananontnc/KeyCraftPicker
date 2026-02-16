@@ -81,6 +81,7 @@ function App() {
                         <Route path="/register" element={<Register />} />
                         <Route path="/parts" element={<PartBrowser />} />
                         <Route path="/builder" element={<Builder />} />
+                        <Route path="/builder/:buildId" element={<Builder />} />
                         <Route path="/builds" element={<UserBuilds />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                     </Routes>

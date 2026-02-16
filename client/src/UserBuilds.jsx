@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Clock, DollarSign, Trash2, X, Image as ImageIcon } from 'lucide-react';
+import { Clock, Trash2, X, Image as ImageIcon, Pencil, Check, Edit3 } from 'lucide-react';
 
 const UserBuilds = () => {
     const [builds, setBuilds] = useState([]);
     const [loading, setLoading] = useState(true);
     const [viewingBuild, setViewingBuild] = useState(null);
+    const [editingNameId, setEditingNameId] = useState(null);
+    const [editNameValue, setEditNameValue] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchBuilds();
@@ -20,7 +24,6 @@ const UserBuilds = () => {
         const user = JSON.parse(userStr);
 
         try {
-            // Fetch builds for this user
             const res = await axios.get(`http://localhost:3000/api/builds?userId=${user.id || user._id}`);
             if (res.data.success) {
                 setBuilds(res.data.data);
@@ -43,10 +46,45 @@ const UserBuilds = () => {
         }
     };
 
+    // --- Rename build ---
+    const startEditingName = (build) => {
+        setEditingNameId(build._id);
+        setEditNameValue(build.name);
+    };
+
+    const saveEditedName = async (id) => {
+        const trimmed = editNameValue.trim();
+        if (!trimmed) return;
+        try {
+            await axios.put(`http://localhost:3000/api/builds/${id}`, { name: trimmed });
+            setBuilds(builds.map(b => b._id === id ? { ...b, name: trimmed } : b));
+            setEditingNameId(null);
+        } catch (err) {
+            console.error('Failed to rename build', err);
+            alert('Failed to rename build');
+        }
+    };
+
+    const handleNameKeyDown = (e, id) => {
+        if (e.key === 'Enter') {
+            saveEditedName(id);
+        } else if (e.key === 'Escape') {
+            setEditingNameId(null);
+        }
+    };
+
+    // --- Edit build (navigate to builder) ---
+    const handleEditBuild = (build) => {
+        navigate(`/builder/${build._id}`);
+    };
+
     // Close modal on escape key
     useEffect(() => {
         const handleEsc = (e) => {
-            if (e.key === 'Escape') setViewingBuild(null);
+            if (e.key === 'Escape') {
+                setViewingBuild(null);
+                setEditingNameId(null);
+            }
         };
         window.addEventListener('keydown', handleEsc);
         return () => window.removeEventListener('keydown', handleEsc);
@@ -76,6 +114,13 @@ const UserBuilds = () => {
                                         <ImageIcon size={18} />
                                     </button>
                                     <button
+                                        onClick={() => handleEditBuild(build)}
+                                        className="btn-card-action btn-card-edit"
+                                        title="Edit Build Parts"
+                                    >
+                                        <Edit3 size={18} />
+                                    </button>
+                                    <button
                                         onClick={() => handleDelete(build._id)}
                                         className="btn-card-action btn-card-delete"
                                         title="Delete Build"
@@ -84,7 +129,34 @@ const UserBuilds = () => {
                                     </button>
                                 </div>
                             </div>
-                            <h3 className="build-title">{build.name}</h3>
+
+                            {/* Editable Build Name */}
+                            {editingNameId === build._id ? (
+                                <div className="build-name-edit">
+                                    <input
+                                        type="text"
+                                        value={editNameValue}
+                                        onChange={(e) => setEditNameValue(e.target.value)}
+                                        onKeyDown={(e) => handleNameKeyDown(e, build._id)}
+                                        onBlur={() => saveEditedName(build._id)}
+                                        className="build-name-input"
+                                        autoFocus
+                                    />
+                                    <button
+                                        onClick={() => saveEditedName(build._id)}
+                                        className="btn-name-save"
+                                        title="Save name"
+                                    >
+                                        <Check size={16} />
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="build-name-display" onClick={() => startEditingName(build)}>
+                                    <h3 className="build-title">{build.name}</h3>
+                                    <Pencil size={14} className="build-name-edit-icon" />
+                                </div>
+                            )}
+
                             <span className="build-price">${build.totalPrice.toFixed(2)}</span>
                             <div className="build-divider"></div>
 
