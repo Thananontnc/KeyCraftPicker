@@ -1030,7 +1030,8 @@ select:focus {
 
 .build-card-top {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 0.5rem;
 }
 
@@ -1072,6 +1073,56 @@ select:focus {
 .btn-card-delete:hover {
   background: #FFCDD2;
   border-color: var(--brick-red);
+}
+
+/* Favorite heart button */
+.btn-card-fav {
+  color: #ccc;
+  border-color: transparent;
+  background: transparent;
+}
+
+.btn-card-fav:hover {
+  color: #E91E63;
+  background: #FCE4EC;
+  border-color: #E91E63;
+}
+
+.btn-card-fav.is-fav {
+  color: #E91E63;
+  border-color: transparent;
+  background: transparent;
+  animation: heartPop 0.3s ease;
+}
+
+.btn-card-fav.is-fav:hover {
+  color: #C2185B;
+  background: #FCE4EC;
+  border-color: #C2185B;
+}
+
+@keyframes heartPop {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.35);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Favorited card highlight */
+.build-card-fav {
+  border-color: #E91E63;
+  box-shadow: 4px 4px 0 rgba(233, 30, 99, 0.2);
+}
+
+.build-card-fav:hover {
+  box-shadow: 8px 8px 0 rgba(233, 30, 99, 0.3);
 }
 
 .build-title {
