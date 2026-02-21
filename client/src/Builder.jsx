@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
+import api from './utils/api';
 import { Save, AlertTriangle, CheckCircle, X } from 'lucide-react';
 
 const Builder = () => {
+    const { buildId } = useParams();
+    const navigate = useNavigate();
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [buildName, setBuildName] = useState('');
     // State for selected parts
     const [build, setBuild] = useState({
         case: null,
@@ -25,9 +30,38 @@ const Builder = () => {
         fetchPresets();
     }, []);
 
+    // Load existing build for editing
+    useEffect(() => {
+        if (buildId) {
+            loadExistingBuild(buildId);
+        }
+    }, [buildId]);
+
+    const loadExistingBuild = async (id) => {
+        try {
+            const res = await api.get(`/builds/${id}`);
+            if (res.data.success) {
+                const existingBuild = res.data.data;
+                setBuildName(existingBuild.name);
+                setIsEditMode(true);
+                // Set the populated part objects directly into build state
+                setBuild({
+                    case: existingBuild.parts.case || null,
+                    pcb: existingBuild.parts.pcb || null,
+                    switch: existingBuild.parts.switch || null,
+                    keycap: existingBuild.parts.keycap || null
+                });
+            }
+        } catch (err) {
+            console.error('Failed to load build for editing', err);
+            alert('Failed to load build. Redirecting to builder.');
+            navigate('/builder');
+        }
+    };
+
     const fetchPresets = async () => {
         try {
-            const res = await axios.get('http://localhost:3000/api/recommendations/presets');
+            const res = await api.get('/recommendations/presets');
             if (res.data.success) {
                 setPresets(res.data.presets);
             }
@@ -52,7 +86,7 @@ const Builder = () => {
         }
 
         try {
-            const res = await axios.post('http://localhost:3000/api/compatibility', { parts: payload });
+            const res = await api.post('/compatibility', { parts: payload });
             if (res.data.success) {
                 setCompatibility({
                     compatible: res.data.compatible,
@@ -68,7 +102,7 @@ const Builder = () => {
     const fetchPartsForSlot = async (type) => {
         setActiveSlot(type);
         try {
-            const res = await axios.get(`http://localhost:3000/api/parts?type=${type}`);
+            const res = await api.get(`/parts?type=${type}`);
             if (res.data.success) {
                 setParts(res.data.data);
             }
@@ -92,16 +126,24 @@ const Builder = () => {
             alert('Please login to save your build');
             return;
         }
-        const user = JSON.parse(userStr);
+
+        // validation: ensure at least one part is selected
+        if (!build.case && !build.pcb && !build.switch && !build.keycap) {
+            alert('Please select at least one part to save your build.');
+            return;
+        }
+
+        // Note: We don't need to parse user here to get ID, the token handles auth.
+        // But the backend expects 'userId' in the body?
+        // Our backend update now FORCES userId from token in POST.
+        // So we can send it or not, backend ignores/overwrites it securely.
 
         try {
             if (!compatibility.compatible) {
                 if (!confirm('Your build has compatibility issues. Save anyway?')) return;
             }
 
-            await axios.post('http://localhost:3000/api/builds', {
-                userId: user.id || user._id, // Handle different id formats
-                name: `My Custom Build - ${new Date().toLocaleDateString()}`,
+            const buildData = {
                 parts: {
                     case: build.case?._id,
                     pcb: build.pcb?._id,
@@ -109,8 +151,26 @@ const Builder = () => {
                     keycap: build.keycap?._id,
                 },
                 totalPrice: Number(calculateTotal())
-            });
-            alert('Build saved successfully!');
+            };
+
+            if (isEditMode && buildId) {
+                // Update existing build
+                buildData.name = buildName;
+                await api.put(`/builds/${buildId}`, buildData);
+                alert('Build updated successfully!');
+                navigate('/builds');
+            } else {
+                // Create new build
+                if (!buildName.trim()) {
+                    alert('Please enter a name for your build');
+                    return;
+                }
+                buildData.name = buildName;
+                // buildData.userId = ... (Handled by backend via token)
+
+                await api.post('/builds', buildData);
+                alert('Build saved successfully!');
+            }
         } catch (err) {
             alert('Failed to save build: ' + (err.response?.data?.error || err.message));
         }
@@ -122,21 +182,31 @@ const Builder = () => {
         if (!part || !part.specs) return true;
 
         // 1. Case <-> PCB Compatibility
+        // 1. Case <-> PCB Compatibilityเข้าใจมั้ยเพื่อนตง
         if (activeSlot === 'pcb' && build.case) {
             // Layout mismatch
             if (!build.case.specs.supportedLayouts.includes(part.specs.layout)) return false;
-            // Mounting mismatch (Strict for now)
-            if (build.case.specs.mountingType !== part.specs.mountingType) return false;
+            // Mounting mismatch (Allow Gummy O-ring & Gasket 60% cases to take Standard Tray PCBs)
+            const isUniversal60 = (build.case.specs.mountingType === 'Gummy O-ring' || build.case.specs.mountingType === 'Gasket')
+                && part.specs.mountingType === 'Tray'
+                && part.specs.layout === '60%';
+
+            if (build.case.specs.mountingType !== part.specs.mountingType && !isUniversal60) return false;
         }
         if (activeSlot === 'case' && build.pcb) {
             if (!part.specs.supportedLayouts.includes(build.pcb.specs.layout)) return false;
-            if (part.specs.mountingType !== build.pcb.specs.mountingType) return false;
+
+            const isUniversal60 = (part.specs.mountingType === 'Gummy O-ring' || part.specs.mountingType === 'Gasket')
+                && build.pcb.specs.mountingType === 'Tray'
+                && build.pcb.specs.layout === '60%';
+
+            if (part.specs.mountingType !== build.pcb.specs.mountingType && !isUniversal60) return false;
         }
 
         // 2. PCB <-> Switch Compatibility
         if (activeSlot === 'switch' && build.pcb) {
             // Optical vs Mechanical (socketType not strictly defined in seed yet, assuming standard mechanical for now)
-            // If PCB is 3-pin (hotSwap: false or specific spec), and Switch is 5-pin?
+            // If PCB is 3-pin (hotSwap: false or specific spec), and Switch is 5-pin? เข้าใจมั้ยเพื่อน
             // Simplified: If PCB says "switchSupport: '3-pin'" and switch is 5-pin -> Incompatible
             if (build.pcb.specs.switchSupport === '3-pin' && part.specs.pinType === '5-pin') return false;
         }
@@ -217,8 +287,22 @@ const Builder = () => {
                         fontSize: '3rem', fontWeight: '900', color: 'var(--brick-red)',
                         textTransform: 'uppercase', letterSpacing: '-1px',
                         textShadow: '3px 3px 0px rgba(0,0,0,0.1)'
-                    }}>Keyboard Builder</h1>
-                    <p style={{ fontSize: '1.2rem', fontWeight: '600', color: '#555' }}>Drag, drop, and click to build your dream board.</p>
+                    }}>{isEditMode ? 'Edit Build' : 'Keyboard Builder'}</h1>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{ fontSize: '1.2rem', fontWeight: '600', color: '#555' }}>Build Name:</span>
+                        <input
+                            type="text"
+                            value={buildName}
+                            onChange={(e) => setBuildName(e.target.value)}
+                            placeholder="Name your build..."
+                            className="build-name-input"
+                            style={{
+                                fontSize: '1.2rem', fontWeight: '700', padding: '0.4rem 0.8rem',
+                                border: '3px solid var(--brick-black)', borderRadius: '8px',
+                                fontFamily: 'Fredoka, sans-serif', width: '300px'
+                            }}
+                        />
+                    </div>
                 </div>
                 <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
                     <div style={{
@@ -236,7 +320,7 @@ const Builder = () => {
                         boxShadow: '4px 4px 0px rgba(0,0,0,0.2)',
                         transform: 'rotate(-1deg)'
                     }}>
-                        <Save size={20} /> Save Build
+                        <Save size={20} /> {isEditMode ? 'Update Build' : 'Save Build'}
                     </button>
                 </div>
             </div>

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import { User } from '@/models/Schemas';
 import bcrypt from 'bcryptjs';
+import { signToken } from '@/lib/jwt';
 
 export async function POST(request) {
     await dbConnect();
@@ -31,16 +32,21 @@ export async function POST(request) {
             );
         }
 
-        // In a real production app, we would issue a JWT or Session Cookie here.
-        // For this project scope, returning the user object (minus password) is sufficient for client-side state.
-        // Security Note: NextAuth.js is recommended for robust auth, but manual implementation requested.
+        const token = signToken({
+            id: user._id,
+            username: user.username,
+            role: user.role
+        });
 
         return NextResponse.json({
             success: true,
+            token,
             data: {
                 id: user._id,
                 username: user.username,
-                role: user.role
+                role: user.role,
+                avatar: user.avatar,
+                bio: user.bio
             }
         }, { status: 200 });
 

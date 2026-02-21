@@ -1,8 +1,29 @@
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 
-// Hardcoded URI from .env.local to avoid dotenv dependency in script
-// Note: In production code, always use env vars. This is a one-off maintenance script.
-const MONGODB_URI = 'mongodb+srv://REDACTED_DB_USER:XPlaizaX%241412@REDACTED_CLUSTER/keycraft';
+// 1. Load .env.local to get the Atlas URI
+const envPath = path.resolve(__dirname, '../.env.local');
+if (fs.existsSync(envPath)) {
+    console.log('Loading .env.local...');
+    const envConfig = fs.readFileSync(envPath, 'utf8');
+    envConfig.split('\n').forEach(line => {
+        // Basic parse for KEY=VALUE
+        const match = line.match(/^([^=]+)=(.*)$/);
+        if (match) {
+            const key = match[1].trim();
+            const value = match[2].trim().replace(/^["']|["']$/g, ''); // Remove quotes if any
+            process.env[key] = value;
+        }
+    });
+}
+
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+    console.error('Error: MONGODB_URI not found in .env.local');
+    process.exit(1);
+}
 
 const cleanDB = async () => {
     try {
@@ -16,7 +37,7 @@ const cleanDB = async () => {
         if (collections.length === 0) {
             console.log('Database is already empty.');
         } else {
-            for (let collection of collections) {
+            for (const collection of collections) {
                 const count = await collection.countDocuments();
                 if (count > 0) {
                     console.log(`Clearing collection: ${collection.collectionName} (${count} items)`);

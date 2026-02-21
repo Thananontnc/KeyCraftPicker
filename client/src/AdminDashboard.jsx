@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from './utils/api';
 import { Plus, Trash2 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -18,7 +18,7 @@ const AdminDashboard = () => {
 
     const fetchParts = async () => {
         try {
-            const res = await axios.get('http://localhost:3000/api/parts');
+            const res = await api.get('/parts');
             if (res.data.success) {
                 setParts(res.data.data);
             }
@@ -161,7 +161,7 @@ const AdminDashboard = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:3000/api/parts', formData);
+            await api.post('/parts', formData);
             alert('Part added!');
             fetchParts();
             setFormData({ name: '', type: 'case', price: '', image: '', specs: {} });
@@ -173,7 +173,7 @@ const AdminDashboard = () => {
     const handleDelete = async (id) => {
         if (!confirm('Delete this part?')) return;
         try {
-            await axios.delete(`http://localhost:3000/api/parts/${id}`);
+            await api.delete(`/parts/${id}`);
             fetchParts(); // Refresh list
         } catch (err) {
             console.error(err);

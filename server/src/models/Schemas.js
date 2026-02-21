@@ -21,6 +21,15 @@ const UserSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    avatar: {
+        type: String, // URL/Path to image
+        default: '',
+    },
+    bio: {
+        type: String,
+        maxlength: [160, 'Bio cannot be more than 160 characters'],
+        default: '',
+    },
 });
 
 // --- Part Schemas ---
@@ -72,9 +81,17 @@ const BuildSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    favorite: {
+        type: Boolean,
+        default: false,
+    },
 }, { timestamps: true });
 
-// Prevent overwrite on hot reload
-export const User = mongoose.models.User || mongoose.model('User', UserSchema);
-export const Part = mongoose.models.Part || mongoose.model('Part', PartSchema);
-export const Build = mongoose.models.Build || mongoose.model('Build', BuildSchema);
+// Prevent overwrite on hot reload (clearing first to ensure schema updates apply)
+if (mongoose.models.User) delete mongoose.models.User;
+if (mongoose.models.Part) delete mongoose.models.Part;
+if (mongoose.models.Build) delete mongoose.models.Build;
+
+export const User = mongoose.model('User', UserSchema);
+export const Part = mongoose.model('Part', PartSchema);
+export const Build = mongoose.model('Build', BuildSchema);

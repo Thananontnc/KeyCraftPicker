@@ -9,6 +9,9 @@ import UserBuilds from './UserBuilds';
 import AdminDashboard from './AdminDashboard';
 import Builder from './Builder';
 import Home from './Home';
+import UserProfile from './UserProfile';
+import SharedBuild from './SharedBuild';
+import { getImageUrl } from './utils/api';
 
 // Navbar Component to use hooks inside Router
 const Navbar = () => {
@@ -51,9 +54,14 @@ const Navbar = () => {
             <div className="auth-links">
                 {user ? (
                     <>
-                        <span className="user-greeting">
-                            <User size={18} /> {user.username}
-                        </span>
+                        <Link to="/profile" className="user-greeting" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            {user.avatar ? (
+                                <img src={getImageUrl(user.avatar)} alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--brick-black)' }} />
+                            ) : (
+                                <User size={18} />
+                            )}
+                            {user.username}
+                        </Link>
                         <button onClick={handleLogout} className="btn-sm btn-logout">
                             <LogOut size={16} /> Logout
                         </button>
@@ -81,7 +89,10 @@ function App() {
                         <Route path="/register" element={<Register />} />
                         <Route path="/parts" element={<PartBrowser />} />
                         <Route path="/builder" element={<Builder />} />
+                        <Route path="/builder/:buildId" element={<Builder />} />
                         <Route path="/builds" element={<UserBuilds />} />
+                        <Route path="/shared/:buildId" element={<SharedBuild />} />
+                        <Route path="/profile" element={<UserProfile />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                     </Routes>
                 </main>

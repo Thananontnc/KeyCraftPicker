@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Clock, DollarSign, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import api from './utils/api';
+import { Clock, Trash2, X, Image as ImageIcon, Pencil, Check, Edit3, Heart, Share2, Link as LinkIcon, Copy, CheckCircle } from 'lucide-react';
 
 const UserBuilds = () => {
     const [builds, setBuilds] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [viewingBuild, setViewingBuild] = useState(null);
+    const [editingNameId, setEditingNameId] = useState(null);
+    const [editNameValue, setEditNameValue] = useState('');
+    const [sharingBuild, setSharingBuild] = useState(null);
+    const [copied, setCopied] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchBuilds();
@@ -19,10 +26,15 @@ const UserBuilds = () => {
         const user = JSON.parse(userStr);
 
         try {
-            // Fetch builds for this user
-            const res = await axios.get(`http://localhost:3000/api/builds?userId=${user.id || user._id}`);
+            const res = await api.get(`/builds?userId=${user.id || user._id}`);
             if (res.data.success) {
-                setBuilds(res.data.data);
+                // Sort: favorites first, then by date (newest first)
+                const sorted = res.data.data.sort((a, b) => {
+                    if (a.favorite && !b.favorite) return -1;
+                    if (!a.favorite && b.favorite) return 1;
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+                setBuilds(sorted);
             }
         } catch (err) {
             console.error('Failed to fetch builds', err);
@@ -34,7 +46,7 @@ const UserBuilds = () => {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this build?')) return;
         try {
-            await axios.delete(`http://localhost:3000/api/builds/${id}`);
+            await api.delete(`/builds/${id}`);
             setBuilds(builds.filter(build => build._id !== id));
         } catch (err) {
             console.error('Failed to delete build', err);
@@ -42,53 +54,319 @@ const UserBuilds = () => {
         }
     };
 
-    if (loading) return <div className="page-container"><p>Loading builds...</p></div>;
+    // --- Rename build ---
+    const startEditingName = (build) => {
+        setEditingNameId(build._id);
+        setEditNameValue(build.name);
+    };
+
+    const saveEditedName = async (id) => {
+        const trimmed = editNameValue.trim();
+        if (!trimmed) return;
+        try {
+            await api.put(`/builds/${id}`, { name: trimmed });
+            setBuilds(builds.map(b => b._id === id ? { ...b, name: trimmed } : b));
+            setEditingNameId(null);
+        } catch (err) {
+            console.error('Failed to rename build', err);
+            alert('Failed to rename build');
+        }
+    };
+
+    // ... (skip handleNameKeyDown, handleEditBuild)
+
+    // --- Toggle favorite ---
+    const toggleFavorite = async (id, currentFav) => {
+        try {
+            await api.put(`/builds/${id}`, { favorite: !currentFav });
+            setBuilds(prev => {
+                const updated = prev.map(b => b._id === id ? { ...b, favorite: !currentFav } : b);
+                // Re-sort: favorites first, then by date
+                return updated.sort((a, b) => {
+                    if (a.favorite && !b.favorite) return -1;
+                    if (!a.favorite && b.favorite) return 1;
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+            });
+        } catch (err) {
+            console.error('Failed to toggle favorite', err);
+        }
+    };
+
+    // --- Share build ---
+    const handleShare = (build) => {
+        setSharingBuild(build);
+        setCopied(false);
+    };
+
+    const getShareUrl = (buildId) => {
+        return `${window.location.origin}/shared/${buildId}`;
+    };
+
+    const copyShareLink = async () => {
+        if (!sharingBuild) return;
+        const url = getShareUrl(sharingBuild._id);
+        try {
+            await navigator.clipboard.writeText(url);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2500);
+        } catch {
+            const textArea = document.createElement('textarea');
+            textArea.value = url;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2500);
+        }
+    };
+
+    // Close modal on escape key
+    useEffect(() => {
+        const handleEsc = (e) => {
+            if (e.key === 'Escape') {
+                setViewingBuild(null);
+                setEditingNameId(null);
+                setSharingBuild(null);
+            }
+        };
+        window.addEventListener('keydown', handleEsc);
+        return () => window.removeEventListener('keydown', handleEsc);
+    }, []);
+
+    if (loading) return <div className="page-container" style={{ textAlign: 'center', marginTop: '4rem' }}><div className="loader"></div><p style={{ marginTop: '1rem', fontWeight: '700' }}>Loading your builds...</p></div>;
 
     return (
-        <div className="page-container" style={{ textAlign: 'left', marginTop: '2rem' }}>
+        <div className="page-container my-builds-page">
             <h1>My Saved Builds</h1>
 
             {builds.length === 0 ? (
-                <div className="card" style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
+                <div className="empty-builds">
                     <p>You haven't saved any builds yet.</p>
                 </div>
             ) : (
                 <div className="grid">
                     {builds.map(build => (
-                        <div key={build._id} className="card part-card" style={{ padding: '1.5rem', position: 'relative' }}>
-                            <button
-                                onClick={() => handleDelete(build._id)}
-                                className="btn-sm"
-                                style={{
-                                    position: 'absolute',
-                                    top: '1rem',
-                                    right: '1rem',
-                                    color: 'var(--brick-red)',
-                                    borderColor: 'transparent',
-                                    background: 'transparent'
-                                }}
-                                title="Delete Build"
-                            >
-                                <Trash2 size={18} />
-                            </button>
-
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', paddingRight: '2rem' }}>
-                                <h3 style={{ fontSize: '1.25rem', margin: 0 }}>{build.name}</h3>
-                                <span className="price">${build.totalPrice.toFixed(2)}</span>
+                        <div key={build._id} className={`build-card ${build.favorite ? 'build-card-fav' : ''}`}>
+                            <div className="build-card-top">
+                                <button
+                                    onClick={() => toggleFavorite(build._id, build.favorite)}
+                                    className={`btn-card-action btn-card-fav ${build.favorite ? 'is-fav' : ''}`}
+                                    title={build.favorite ? 'Remove from favorites' : 'Add to favorites'}
+                                >
+                                    <Heart size={18} fill={build.favorite ? 'currentColor' : 'none'} />
+                                </button>
+                                <div className="build-card-actions">
+                                    <button
+                                        onClick={() => setViewingBuild(build)}
+                                        className="btn-card-action btn-card-view"
+                                        title="View Component Images"
+                                    >
+                                        <ImageIcon size={18} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleEditBuild(build)}
+                                        className="btn-card-action btn-card-edit"
+                                        title="Edit Build Parts"
+                                    >
+                                        <Edit3 size={18} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleShare(build)}
+                                        className="btn-card-action btn-card-share"
+                                        title="Share Build"
+                                    >
+                                        <Share2 size={18} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(build._id)}
+                                        className="btn-card-action btn-card-delete"
+                                        title="Delete Build"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
                             </div>
 
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
-                                {build.parts.case && <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--text-secondary)' }}>Case:</span> <span>{build.parts.case.name}</span></div>}
-                                {build.parts.pcb && <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--text-secondary)' }}>PCB:</span> <span>{build.parts.pcb.name}</span></div>}
-                                {build.parts.switch && <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--text-secondary)' }}>Switch:</span> <span>{build.parts.switch.name}</span></div>}
-                                {build.parts.keycap && <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--text-secondary)' }}>Keycaps:</span> <span>{build.parts.keycap.name}</span></div>}
+                            {/* Editable Build Name */}
+                            {editingNameId === build._id ? (
+                                <div className="build-name-edit">
+                                    <input
+                                        type="text"
+                                        value={editNameValue}
+                                        onChange={(e) => setEditNameValue(e.target.value)}
+                                        onKeyDown={(e) => handleNameKeyDown(e, build._id)}
+                                        onBlur={() => saveEditedName(build._id)}
+                                        className="build-name-input"
+                                        autoFocus
+                                    />
+                                    <button
+                                        onClick={() => saveEditedName(build._id)}
+                                        className="btn-name-save"
+                                        title="Save name"
+                                    >
+                                        <Check size={16} />
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="build-name-display" onClick={() => startEditingName(build)}>
+                                    <h3 className="build-title">{build.name}</h3>
+                                    <Pencil size={14} className="build-name-edit-icon" />
+                                </div>
+                            )}
+
+                            <span className="build-price">${build.totalPrice.toFixed(2)}</span>
+                            <div className="build-divider"></div>
+
+                            <div className="build-parts-list">
+                                {build.parts?.case && (
+                                    <div className="build-part-item">
+                                        <span className="part-label">Case</span>
+                                        <span className="part-name">{build.parts.case.name}</span>
+                                    </div>
+                                )}
+                                {build.parts?.pcb && (
+                                    <div className="build-part-item">
+                                        <span className="part-label">PCB</span>
+                                        <span className="part-name">{build.parts.pcb.name}</span>
+                                    </div>
+                                )}
+                                {build.parts?.switch && (
+                                    <div className="build-part-item">
+                                        <span className="part-label">Switch</span>
+                                        <span className="part-name">{build.parts.switch.name}</span>
+                                    </div>
+                                )}
+                                {build.parts?.keycap && (
+                                    <div className="build-part-item">
+                                        <span className="part-label">Keycaps</span>
+                                        <span className="part-name">{build.parts.keycap.name}</span>
+                                    </div>
+                                )}
                             </div>
 
-                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <Clock size={14} /> {new Date(build.createdAt).toLocaleDateString()}
+                            <div className="build-footer">
+                                <Clock size={16} /> Created on {new Date(build.createdAt).toLocaleDateString()}
                             </div>
                         </div>
                     ))}
+                </div>
+            )}
+
+            {/* Image Gallery Modal */}
+            {viewingBuild && (
+                <div className="modal-overlay" onClick={() => setViewingBuild(null)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <button className="modal-close" onClick={() => setViewingBuild(null)}>
+                            <X size={24} />
+                        </button>
+
+                        <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem', color: 'var(--text-main)' }}>{viewingBuild.name}</h2>
+                        <p style={{ color: 'var(--text-muted)' }}>Component Gallery</p>
+
+                        <div className="gallery-grid">
+                            {viewingBuild.parts?.case && (
+                                <div className="gallery-item">
+                                    <div className="gallery-label">Case</div>
+                                    <div className="gallery-image-container">
+                                        <img
+                                            src={viewingBuild.parts.case.image}
+                                            alt={viewingBuild.parts.case.name}
+                                            className="gallery-image"
+                                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'; }}
+                                        />
+                                    </div>
+                                    <div className="gallery-title">{viewingBuild.parts.case.name}</div>
+                                </div>
+                            )}
+                            {viewingBuild.parts?.pcb && (
+                                <div className="gallery-item">
+                                    <div className="gallery-label">PCB</div>
+                                    <div className="gallery-image-container">
+                                        <img
+                                            src={viewingBuild.parts.pcb.image}
+                                            alt={viewingBuild.parts.pcb.name}
+                                            className="gallery-image"
+                                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'; }}
+                                        />
+                                    </div>
+                                    <div className="gallery-title">{viewingBuild.parts.pcb.name}</div>
+                                </div>
+                            )}
+                            {viewingBuild.parts?.switch && (
+                                <div className="gallery-item">
+                                    <div className="gallery-label">Switch</div>
+                                    <div className="gallery-image-container">
+                                        <img
+                                            src={viewingBuild.parts.switch.image}
+                                            alt={viewingBuild.parts.switch.name}
+                                            className="gallery-image"
+                                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'; }}
+                                        />
+                                    </div>
+                                    <div className="gallery-title">{viewingBuild.parts.switch.name}</div>
+                                </div>
+                            )}
+                            {viewingBuild.parts?.keycap && (
+                                <div className="gallery-item">
+                                    <div className="gallery-label">Keycaps</div>
+                                    <div className="gallery-image-container">
+                                        <img
+                                            src={viewingBuild.parts.keycap.image}
+                                            alt={viewingBuild.parts.keycap.name}
+                                            className="gallery-image"
+                                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'; }}
+                                        />
+                                    </div>
+                                    <div className="gallery-title">{viewingBuild.parts.keycap.name}</div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Share Modal */}
+            {sharingBuild && (
+                <div className="modal-overlay" onClick={() => setSharingBuild(null)}>
+                    <div className="modal-content share-modal" onClick={e => e.stopPropagation()}>
+                        <button className="modal-close" onClick={() => setSharingBuild(null)}>
+                            <X size={24} />
+                        </button>
+
+                        <div className="share-modal-header">
+                            <Share2 size={28} className="share-modal-icon" />
+                            <h2>Share Build</h2>
+                            <p className="share-modal-subtitle">Share "{sharingBuild.name}" with others</p>
+                        </div>
+
+                        <div className="share-link-container">
+                            <LinkIcon size={16} className="share-link-icon" />
+                            <input
+                                type="text"
+                                value={getShareUrl(sharingBuild._id)}
+                                readOnly
+                                className="share-link-input"
+                                onClick={(e) => e.target.select()}
+                            />
+                            <button
+                                onClick={copyShareLink}
+                                className={`share-copy-btn ${copied ? 'copied' : ''}`}
+                            >
+                                {copied ? <><CheckCircle size={16} /> Copied!</> : <><Copy size={16} /> Copy</>}
+                            </button>
+                        </div>
+
+                        <a
+                            href={getShareUrl(sharingBuild._id)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="share-preview-link"
+                        >
+                            Open shared page in new tab →
+                        </a>
+                    </div>
                 </div>
             )}
         </div>

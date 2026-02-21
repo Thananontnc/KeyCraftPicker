@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import { User } from '@/models/Schemas';
 import bcrypt from 'bcryptjs';
+import { signToken } from '@/lib/jwt';
 
 export async function POST(request) {
     await dbConnect();
@@ -27,10 +28,26 @@ export async function POST(request) {
         const user = await User.create({
             username,
             password: hashedPassword,
-            role: 'user', // Default role
+            role: 'user', // Default role เข้าใจมั้ยเพื่อน
         });
 
-        return NextResponse.json({ success: true, data: { username: user.username, role: user.role } }, { status: 201 });
+        const token = signToken({
+            id: user._id,
+            username: user.username,
+            role: user.role
+        });
+
+        return NextResponse.json({
+            success: true,
+            token,
+            data: {
+                id: user._id,
+                username: user.username,
+                role: user.role,
+                avatar: user.avatar,
+                bio: user.bio
+            }
+        }, { status: 201 });
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 400 });
     }
