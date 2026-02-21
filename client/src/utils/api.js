@@ -5,6 +5,14 @@ const api = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'
 });
 
+export const getImageUrl = (path) => {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+    const backendUrl = apiBaseUrl.replace('/api', '');
+    return `${backendUrl}${path}`;
+};
+
 // Request Interceptor: Attach Token
 api.interceptors.request.use(
     (config) => {

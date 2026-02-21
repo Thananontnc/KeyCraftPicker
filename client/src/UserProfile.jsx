@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from './utils/api'; // Use custom api client
+import api, { getImageUrl } from './utils/api'; // Use custom api client
 import { User, Camera, Save, Package, Cpu, Zap, Award, TrendingUp, DollarSign, Shield, Sparkles, Heart } from 'lucide-react';
 
 const UserProfile = () => {
@@ -177,7 +177,7 @@ const UserProfile = () => {
                     <div className="profile-avatar-wrapper">
                         <div className="profile-avatar">
                             {avatar ? (
-                                <img src={`${avatar}`} alt="Profile" />
+                                <img src={getImageUrl(avatar)} alt="Profile" />
                             ) : (
                                 <User size={60} color="var(--text-muted)" />
                             )}

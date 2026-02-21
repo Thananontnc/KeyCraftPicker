@@ -11,6 +11,7 @@ import Builder from './Builder';
 import Home from './Home';
 import UserProfile from './UserProfile';
 import SharedBuild from './SharedBuild';
+import { getImageUrl } from './utils/api';
 
 // Navbar Component to use hooks inside Router
 const Navbar = () => {
@@ -55,7 +56,7 @@ const Navbar = () => {
                     <>
                         <Link to="/profile" className="user-greeting" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             {user.avatar ? (
-                                <img src={`${user.avatar}`} alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--brick-black)' }} />
+                                <img src={getImageUrl(user.avatar)} alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--brick-black)' }} />
                             ) : (
                                 <User size={18} />
                             )}
