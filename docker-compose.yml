@@ -7,6 +7,8 @@ services:
       - MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<dbname>
       - JWT_SECRET=<your-jwt-secret>
       - FRONTEND_URL=https://<your-azure-dns>
+    volumes:
+      - uploads:/app/public/uploads
     networks:
       - app-network
 
@@ -29,11 +31,13 @@ services:
     volumes:
       - nginx_secrets:/etc/letsencrypt
       - ./user_conf.d:/etc/nginx/user_conf.d
+      - uploads:/var/www/html/public/uploads:ro
     networks:
       - app-network
 
 volumes:
   nginx_secrets:
+  uploads:
 
 
 networks:
