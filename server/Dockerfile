@@ -13,6 +13,11 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Next.js needs these at build time for page data collection (dummy values are fine)
+ENV MONGODB_URI=mongodb://placeholder:27017/placeholder
+ENV JWT_SECRET=build-time-placeholder
+
 RUN npm run build
 
 # Production image, copy all the files and run next
