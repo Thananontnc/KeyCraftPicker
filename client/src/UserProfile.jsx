@@ -177,7 +177,7 @@ const UserProfile = () => {
                     <div className="profile-avatar-wrapper">
                         <div className="profile-avatar">
                             {avatar ? (
-                                <img src={`http://localhost:3000${avatar}`} alt="Profile" />
+                                <img src={`${avatar}`} alt="Profile" />
                             ) : (
                                 <User size={60} color="var(--text-muted)" />
                             )}

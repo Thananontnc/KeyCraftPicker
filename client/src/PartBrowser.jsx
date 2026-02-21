@@ -38,7 +38,7 @@ const PartBrowser = () => {
             if (activeTab !== 'all') params.append('type', activeTab);
             if (searchQuery) params.append('search', searchQuery);
 
-            const res = await axios.get(`http://localhost:3000/api/parts?${params.toString()}`);
+            const res = await api.get(`/parts?${params.toString()}`);
             if (res.data.success) {
                 setParts(res.data.data);
             }

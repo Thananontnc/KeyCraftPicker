@@ -15,7 +15,7 @@ const SharedBuild = () => {
 
     const fetchBuild = async () => {
         try {
-            const res = await axios.get(`http://localhost:3000/api/builds/${buildId}`);
+            const res = await api.get(`/builds/${buildId}`);
             if (res.data.success) {
                 setBuild(res.data.data);
             } else {
