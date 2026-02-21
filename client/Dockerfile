@@ -2,14 +2,11 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
-# Accept the backend API URL as a build argument
-ARG VITE_API_URL
-ENV VITE_API_URL=$VITE_API_URL
-
 COPY package.json package-lock.json* ./
 RUN npm install
 COPY . .
-# Build the application (Vite reads VITE_API_BASE_URL at build time)
+
+# Vite reads VITE_API_URL from the .env file automatically during build
 RUN npm run build
 
 # Stage 2: Serve the app with Nginx
