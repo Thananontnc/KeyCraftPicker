@@ -6,7 +6,6 @@ export async function POST(request) {
     await dbConnect();
     try {
         const data = await request.json();
-        // Validate specific fields based on type
         const { specs, type } = data;
         const errors = [];
 
@@ -49,7 +48,6 @@ export async function GET(request) {
         query.type = type;
     }
     if (search) {
-        // Case-insensitive regex search on 'name'
         query.name = { $regex: search, $options: 'i' };
     }
 
