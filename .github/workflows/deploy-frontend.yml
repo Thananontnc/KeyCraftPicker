@@ -24,7 +24,9 @@ jobs:
 
       - name: Build and push container image
         run: |
-          docker build ./client -t ${{ secrets.AZURE_REGISTRY_SERVER }}/keycraft-client:${{ github.sha }}
+          docker build ./client \
+            --build-arg VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }} \
+            -t ${{ secrets.AZURE_REGISTRY_SERVER }}/keycraft-client:${{ github.sha }}
           docker push ${{ secrets.AZURE_REGISTRY_SERVER }}/keycraft-client:${{ github.sha }}
           docker tag ${{ secrets.AZURE_REGISTRY_SERVER }}/keycraft-client:${{ github.sha }} ${{ secrets.AZURE_REGISTRY_SERVER }}/keycraft-client:latest
           docker push ${{ secrets.AZURE_REGISTRY_SERVER }}/keycraft-client:latest
