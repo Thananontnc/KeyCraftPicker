@@ -1,0 +1,41 @@
+services:
+  my-next-backend:
+    image: backend:1.0
+    container_name: backend-server
+    restart: unless-stopped
+    environment:
+      - MONGODB_URI=mongodb+srv://REDACTED_DB_USER:REDACTED_PASSWORD@REDACTED_CLUSTER/keycraft
+      - JWT_SECRET=REDACTED_JWT_SECRET
+      - FRONTEND_URL=https://YOUR_AZURE_DNS_HERE
+    networks:
+      - app-network
+
+  my-react-frontend:
+    image: frontend:1.0
+    container_name: frontend-server
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  nginx:
+    image: jonasal/nginx-certbot:latest
+    container_name: nginx-proxy
+    restart: unless-stopped
+    env_file:
+      - ./nginx-certbot.env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - nginx_secrets:/etc/letsencrypt
+      - ./user_conf.d:/etc/nginx/user_conf.d
+    networks:
+      - app-network
+
+volumes:
+  nginx_secrets:
+
+
+networks:
+  app-network:
+    driver: bridge
