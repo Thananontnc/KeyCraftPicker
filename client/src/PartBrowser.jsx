@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from './utils/api';
 import { Package, CircuitBoard, Keyboard, Cpu, Filter } from 'lucide-react';
 
 const PartTypeIcon = ({ type }) => {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from './utils/api';
 import { ArrowLeft, Keyboard, DollarSign } from 'lucide-react';
 
 const SharedBuild = () => {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from './utils/api';
 import { Plus, Trash2 } from 'lucide-react';
 
 const AdminDashboard = () => {
