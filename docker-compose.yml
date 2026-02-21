@@ -4,9 +4,9 @@ services:
     container_name: backend-server
     restart: unless-stopped
     environment:
-      - MONGODB_URI=mongodb+srv://REDACTED_DB_USER:REDACTED_PASSWORD@REDACTED_CLUSTER/keycraft
-      - JWT_SECRET=REDACTED_JWT_SECRET
-      - FRONTEND_URL=https://YOUR_AZURE_DNS_HERE
+      - MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<dbname>
+      - JWT_SECRET=<your-jwt-secret>
+      - FRONTEND_URL=https://<your-azure-dns>
     networks:
       - app-network
 
