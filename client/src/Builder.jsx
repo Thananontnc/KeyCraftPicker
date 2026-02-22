@@ -182,39 +182,41 @@ const Builder = () => {
         if (!part || !part.specs) return true;
 
         // 1. Case <-> PCB Compatibility
-        // 1. Case <-> PCB Compatibilityเข้าใจมั้ยเพื่อนตง
-        if (activeSlot === 'pcb' && build.case) {
+        if (activeSlot === 'pcb' && build.case?.specs) {
             // Layout mismatch
-            if (!build.case.specs.supportedLayouts.includes(part.specs.layout)) return false;
+            if (build.case.specs.supportedLayouts && part.specs.layout &&
+                !build.case.specs.supportedLayouts.includes(part.specs.layout)) return false;
             // Mounting mismatch (Allow Gummy O-ring & Gasket 60% cases to take Standard Tray PCBs)
-            const isUniversal60 = (build.case.specs.mountingType === 'Gummy O-ring' || build.case.specs.mountingType === 'Gasket')
-                && part.specs.mountingType === 'Tray'
-                && part.specs.layout === '60%';
+            if (build.case.specs.mountingType && part.specs.mountingType) {
+                const isUniversal60 = (build.case.specs.mountingType === 'Gummy O-ring' || build.case.specs.mountingType === 'Gasket')
+                    && part.specs.mountingType === 'Tray'
+                    && part.specs.layout === '60%';
 
-            if (build.case.specs.mountingType !== part.specs.mountingType && !isUniversal60) return false;
+                if (build.case.specs.mountingType !== part.specs.mountingType && !isUniversal60) return false;
+            }
         }
-        if (activeSlot === 'case' && build.pcb) {
-            if (!part.specs.supportedLayouts.includes(build.pcb.specs.layout)) return false;
+        if (activeSlot === 'case' && build.pcb?.specs) {
+            if (part.specs.supportedLayouts && build.pcb.specs.layout &&
+                !part.specs.supportedLayouts.includes(build.pcb.specs.layout)) return false;
 
-            const isUniversal60 = (part.specs.mountingType === 'Gummy O-ring' || part.specs.mountingType === 'Gasket')
-                && build.pcb.specs.mountingType === 'Tray'
-                && build.pcb.specs.layout === '60%';
+            if (part.specs.mountingType && build.pcb.specs.mountingType) {
+                const isUniversal60 = (part.specs.mountingType === 'Gummy O-ring' || part.specs.mountingType === 'Gasket')
+                    && build.pcb.specs.mountingType === 'Tray'
+                    && build.pcb.specs.layout === '60%';
 
-            if (part.specs.mountingType !== build.pcb.specs.mountingType && !isUniversal60) return false;
+                if (part.specs.mountingType !== build.pcb.specs.mountingType && !isUniversal60) return false;
+            }
         }
 
         // 2. PCB <-> Switch Compatibility
-        if (activeSlot === 'switch' && build.pcb) {
-            // Optical vs Mechanical (socketType not strictly defined in seed yet, assuming standard mechanical for now)
-            // If PCB is 3-pin (hotSwap: false or specific spec), and Switch is 5-pin? เข้าใจมั้ยเพื่อน
-            // Simplified: If PCB says "switchSupport: '3-pin'" and switch is 5-pin -> Incompatible
+        if (activeSlot === 'switch' && build.pcb?.specs) {
             if (build.pcb.specs.switchSupport === '3-pin' && part.specs.pinType === '5-pin') return false;
         }
 
         // 3. PCB <-> Keycap Compatibility
-        if (activeSlot === 'keycap' && build.pcb) {
-            // Basic layout check
-            if (part.specs.layoutSupport && !part.specs.layoutSupport.includes(build.pcb.specs.layout)) return false;
+        if (activeSlot === 'keycap' && build.pcb?.specs) {
+            if (part.specs.layoutSupport && build.pcb.specs.layout &&
+                !part.specs.layoutSupport.includes(build.pcb.specs.layout)) return false;
         }
 
         return true;
