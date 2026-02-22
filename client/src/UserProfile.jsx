@@ -261,7 +261,7 @@ const UserProfile = () => {
             </div>
 
             {/* === STATS + BIO IN 2-COLUMN LAYOUT === */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+            <div className="profile-stats-bio-grid">
 
                 {/* Left: Stats */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
