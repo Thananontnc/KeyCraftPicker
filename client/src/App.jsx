@@ -11,6 +11,7 @@ import Builder from './Builder';
 import Home from './Home';
 import UserProfile from './UserProfile';
 import SharedBuild from './SharedBuild';
+import CommunityShowcase from './CommunityShowcase';
 import { getImageUrl } from './utils/api';
 
 // Navbar Component to use hooks inside Router
@@ -49,6 +50,7 @@ const Navbar = () => {
                 <Link to="/">Home</Link>
                 <Link to="/builder">Builder</Link>
                 <Link to="/parts">Parts</Link>
+                <Link to="/community">Community</Link>
                 {user && <Link to="/builds">My Builds</Link>}
             </div>
             <div className="auth-links">
@@ -92,6 +94,7 @@ function App() {
                         <Route path="/builder/:buildId" element={<Builder />} />
                         <Route path="/builds" element={<UserBuilds />} />
                         <Route path="/shared/:buildId" element={<SharedBuild />} />
+                        <Route path="/community" element={<CommunityShowcase />} />
                         <Route path="/profile" element={<UserProfile />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                     </Routes>

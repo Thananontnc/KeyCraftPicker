@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from './utils/api';
-import { Clock, Trash2, X, Image as ImageIcon, Pencil, Check, Edit3, Heart, Share2, Link as LinkIcon, Copy, CheckCircle } from 'lucide-react';
+import { Clock, Trash2, X, Image as ImageIcon, Pencil, Check, Edit3, Heart, Share2, Link as LinkIcon, Copy, CheckCircle, Globe } from 'lucide-react';
 
 const UserBuilds = () => {
     const [builds, setBuilds] = useState([]);
@@ -103,6 +103,16 @@ const UserBuilds = () => {
         }
     };
 
+    // --- Toggle public/community visibility ---
+    const togglePublic = async (id, currentPublic) => {
+        try {
+            await api.put(`/builds/${id}`, { isPublic: !currentPublic });
+            setBuilds(prev => prev.map(b => b._id === id ? { ...b, isPublic: !currentPublic } : b));
+        } catch (err) {
+            console.error('Failed to toggle public', err);
+        }
+    };
+
     // --- Share build ---
     const handleShare = (build) => {
         setSharingBuild(build);
@@ -190,6 +200,14 @@ const UserBuilds = () => {
                                         <Share2 size={18} />
                                     </button>
                                     <button
+                                        onClick={() => togglePublic(build._id, build.isPublic)}
+                                        className={`btn-card-action ${build.isPublic ? 'btn-card-share' : ''}`}
+                                        title={build.isPublic ? 'Unpublish from Community' : 'Publish to Community'}
+                                        style={build.isPublic ? { color: 'var(--brick-green)' } : {}}
+                                    >
+                                        <Globe size={18} />
+                                    </button>
+                                    <button
                                         onClick={() => handleDelete(build._id)}
                                         className="btn-card-action btn-card-delete"
                                         title="Delete Build"
@@ -226,7 +244,19 @@ const UserBuilds = () => {
                                 </div>
                             )}
 
-                            <span className="build-price">${build.totalPrice.toFixed(2)}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                <span className="build-price">${build.totalPrice.toFixed(2)}</span>
+                                {build.isPublic && (
+                                    <span style={{
+                                        fontSize: '0.7rem', fontWeight: '700',
+                                        padding: '2px 8px', borderRadius: '8px',
+                                        background: 'var(--brick-green)', color: 'white',
+                                        display: 'flex', alignItems: 'center', gap: '3px'
+                                    }}>
+                                        <Globe size={12} /> Published
+                                    </span>
+                                )}
+                            </div>
                             <div className="build-divider"></div>
 
                             <div className="build-parts-list">

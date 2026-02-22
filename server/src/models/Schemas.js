@@ -85,6 +85,14 @@ const BuildSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    isPublic: {
+        type: Boolean,
+        default: false,
+    },
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
 }, { timestamps: true });
 
 // Prevent overwrite on hot reload (clearing first to ensure schema updates apply)
