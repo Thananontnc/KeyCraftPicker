@@ -232,25 +232,25 @@ const UserBuilds = () => {
                             <div className="build-parts-list">
                                 {build.parts?.case && (
                                     <div className="build-part-item">
-                                        <span className="part-label">Case</span>
+                                        <span className="part-label" style={{ background: 'var(--brick-red)', color: 'white', border: '2px solid #b91c1c' }}>Case</span>
                                         <span className="part-name">{build.parts.case.name}</span>
                                     </div>
                                 )}
                                 {build.parts?.pcb && (
                                     <div className="build-part-item">
-                                        <span className="part-label">PCB</span>
+                                        <span className="part-label" style={{ background: 'var(--brick-blue)', color: 'white', border: '2px solid #1e40af' }}>PCB</span>
                                         <span className="part-name">{build.parts.pcb.name}</span>
                                     </div>
                                 )}
                                 {build.parts?.switch && (
                                     <div className="build-part-item">
-                                        <span className="part-label">Switch</span>
+                                        <span className="part-label" style={{ background: 'var(--brick-yellow)', color: 'var(--brick-black)', border: '2px solid #b45309' }}>Switch</span>
                                         <span className="part-name">{build.parts.switch.name}</span>
                                     </div>
                                 )}
                                 {build.parts?.keycap && (
                                     <div className="build-part-item">
-                                        <span className="part-label">Keycaps</span>
+                                        <span className="part-label" style={{ background: 'var(--brick-green)', color: 'white', border: '2px solid #15803d' }}>Keycaps</span>
                                         <span className="part-name">{build.parts.keycap.name}</span>
                                     </div>
                                 )}
