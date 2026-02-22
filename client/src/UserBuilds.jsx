@@ -73,7 +73,17 @@ const UserBuilds = () => {
         }
     };
 
-    // ... (skip handleNameKeyDown, handleEditBuild)
+    const handleNameKeyDown = (e, id) => {
+        if (e.key === 'Enter') {
+            saveEditedName(id);
+        } else if (e.key === 'Escape') {
+            setEditingNameId(null);
+        }
+    };
+
+    const handleEditBuild = (build) => {
+        navigate(`/builder/${build._id}`);
+    };
 
     // --- Toggle favorite ---
     const toggleFavorite = async (id, currentFav) => {
