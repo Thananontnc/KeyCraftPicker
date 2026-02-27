@@ -48,7 +48,8 @@ Building a mechanical keyboard requires selecting many compatible components —
 ## 🖼️ Screenshots
 
 ### Home Page
-![Home Page](screenshots/home.png)
+![Home Page](<img width="1512" height="855" alt="Screenshot 2569-02-27 at 14 03 50" src="https://github.com/user-attachments/assets/809327df-514f-45db-afd1-cd3a6067ed68" />)
+
 
 ### Keyboard Builder
 ![Keyboard Builder](screenshots/builder.png)
