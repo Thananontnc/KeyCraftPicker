@@ -27,12 +27,18 @@ Building a mechanical keyboard requires selecting many compatible components —
 ---
 
 ## ✨ Features
-- **Interactive Keyboard Builder**: Select and combine cases, PCBs, switches, keycaps, and more.
-- **Part Browser**: Explore a wide variety of keyboard components.
-- **User Authentication**: Register and log in to save your favorite custom builds.
-- **My Saved Builds**: Manage your custom builds, edit details, and favorite them.
-- **Community Showcase**: Share your mechanical keyboard builds and get inspired by others.
-- **Admin Dashboard**: Effortlessly manage parts and system data.
+
+- 🔐 User authentication (Register / Login / Logout)
+- 👤 User profiles with avatar upload and bio
+- 🔧 Step-by-step Keyboard Builder (Case → PCB → Switch → Keycap)
+- ✅ Automatic compatibility checking (layout, mounting type, pin type)
+- 💰 Automatic total price calculation
+- 💾 Save, rename, edit, and delete keyboard builds
+- ❤️ Favorite builds (sorted first in your list)
+- 🔗 Share builds via public shareable links
+- 🖼️ Component image gallery for saved builds
+- 🌟 Preset build recommendations (e.g. "The Creamy Dream", "The Thocky King")
+- 🛠️ Admin dashboard to manage keyboard parts
 
 ---
 
