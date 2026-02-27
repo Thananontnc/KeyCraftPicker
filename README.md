@@ -10,7 +10,7 @@ Whether you are a beginner looking for compatible parts or a hobbyist managing m
 ## 👥 Team Members
 
 - **Thananon Chounudom** - [GitHub Profile](https://github.com/Thananontnc)
-- **Prathomporn Bunjua** - [GitHub Profile](https://github.com/huthong)
+- **Prathomporn Bunjua** - [GitHub Profile](https://github.com/ThongBunjua)
 
 ---
 
