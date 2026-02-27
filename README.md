@@ -1,6 +1,7 @@
 # ⌨️ KeyCraft Picker
 
-A web application for mechanical keyboard part selection — helping users choose compatible parts, plan their builds, and calculate total costs with ease.
+KeyCraftPicker is a comprehensive, full-stack web application tailored for custom mechanical keyboard enthusiasts. It provides an intuitive platform for users to mix and match various keyboard parts, create custom builds, and share their creations with the community. 
+Whether you are a beginner looking for compatible parts or a hobbyist managing multiple builds, KeyCraftPicker offers a structured builder, an extensive part browser, and a community showcase to elevate your mechanical keyboard journey.
 
 🔗 **Live Demo:** [https://keycraft-server.eastasia.cloudapp.azure.com](https://keycraft-server.eastasia.cloudapp.azure.com)
 
@@ -8,12 +9,8 @@ A web application for mechanical keyboard part selection — helping users choos
 
 ## 👥 Team Members
 
-| Name | GitHub |
-|------|--------|
-| Thananon Chounudom | [@thananon](https://github.com/thananon) |
-| Prathomporn Bunjua | [@prathomporn](https://github.com/prathomporn) |
-
-> ⚠️ Replace the GitHub links above with the correct profile URLs.
+- **Thananon Chounudom** - [GitHub Profile](https://github.com/Thananontnc)
+- **Prathomporn Bunjua** - [GitHub Profile](https://github.com/huthong)
 
 ---
 
@@ -30,48 +27,20 @@ Building a mechanical keyboard requires selecting many compatible components —
 ---
 
 ## ✨ Features
-
-- 🔐 User authentication (Register / Login / Logout)
-- 👤 User profiles with avatar upload and bio
-- 🔧 Step-by-step Keyboard Builder (Case → PCB → Switch → Keycap)
-- ✅ Automatic compatibility checking (layout, mounting type, pin type)
-- 💰 Automatic total price calculation
-- 💾 Save, rename, edit, and delete keyboard builds
-- ❤️ Favorite builds (sorted first in your list)
-- 🔗 Share builds via public shareable links
-- 🖼️ Component image gallery for saved builds
-- 🌟 Preset build recommendations (e.g. "The Creamy Dream", "The Thocky King")
-- 🛠️ Admin dashboard to manage keyboard parts
-
----
-
-## 🖼️ Screenshots
-
-### Home Page
-![Home Page](<img width="1512" height="855" alt="Screenshot 2569-02-27 at 14 03 50" src="https://github.com/user-attachments/assets/809327df-514f-45db-afd1-cd3a6067ed68" />)
-
-
-### Keyboard Builder
-![Keyboard Builder](screenshots/builder.png)
-
-### Part Browser
-![Part Browser](screenshots/parts.png)
-
-### Build Detail
-![Build Detail](screenshots/build-detail.png)
-
-> Replace the screenshot paths above with your actual images.
+- **Interactive Keyboard Builder**: Select and combine cases, PCBs, switches, keycaps, and more.
+- **Part Browser**: Explore a wide variety of keyboard components.
+- **User Authentication**: Register and log in to save your favorite custom builds.
+- **My Saved Builds**: Manage your custom builds, edit details, and favorite them.
+- **Community Showcase**: Share your mechanical keyboard builds and get inspired by others.
+- **Admin Dashboard**: Effortlessly manage parts and system data.
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React (Vite) + Vanilla CSS |
-| Backend | Next.js (App Router, Route Handlers) |
-| Database | MongoDB |
-| Deployment | Azure Virtual Machine |
+- **Frontend**: React (Vite) + Vanilla CSS
+- **Backend**: Next.js (App Router, Route Handlers), Node.js, Express
+- **Database**: MongoDB (Mongoose)
 
 ---
 
@@ -89,17 +58,38 @@ Building a mechanical keyboard requires selecting many compatible components —
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/keycraft-picker.git
+git clone https://github.com/Thananontnc/KeyCraftPicker.git
 
-# Install dependencies
-cd keycraft-picker
-npm install
+# Install dependencies (for both client and server depending on how it's structured)
+# cd server && npm install
+# cd ../client && npm install
 
 # Set up environment variables
-cp .env.example .env.local
+# cp server/.env.example server/.env.local
 
 # Run the development server
-npm run dev
+# npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+---
+
+## 📸 Screenshots
+
+### Home Page
+![Home Page](./client/public/1.png) 
+
+### Keyboard Builder
+![Keyboard Builder](./client/public/2.png)
+
+### Parts Browser
+![Parts Browser](./client/public/3.png)
+
+### Community Showcase
+![Community Showcase](./client/public/4.png)
+
+### My Build
+![My Build](./client/public/5.png)
+
+### Profile
+![Profile](./client/public/6.png)
+
